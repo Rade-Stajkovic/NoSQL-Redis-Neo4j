@@ -37,11 +37,72 @@ namespace NBP_backend.Controllers
 
     
         [HttpPost]
-        [Route("CreateUser/{username}/{password}")]
-        public async Task<IActionResult> Create(String username, String password)
+        [Route("CreateUser/{username}/{password}/{Name}/{SurName}")]
+        public async Task<IActionResult> Create(String username, String password, String Name, String SurName)
         {
-            _userServices.CreateUser(username, password);
+            _userServices.CreateUser(username, password, Name, SurName);
             return Ok("Uspelo");
+        }
+
+        [HttpGet]
+        [Route("LogIn/{username}/{password}")]
+        public IActionResult LogIn(String username, String password)
+        {
+            try
+            {
+                Task<int> res = _userServices.LogInUser(username, password);
+                int res1 = res.Result;
+                if (res1 == -1)
+                {
+                    return BadRequest("Pogresna sifra");
+                }
+                else if (res1 == 1) return Ok("Uspesno logovanje");
+                return BadRequest("Korisnik ne postoji");
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("FollowProduct/{IDUser}/{IDProduct}")]
+        public IActionResult FollowProduct(int IDUser, int IDProduct)
+        {
+            try
+            {
+                Task<bool> res = _userServices.FollowProduct(IDUser, IDProduct);
+                bool res1 = res.Result;
+                if (res1)
+                {
+                    return Ok("Uspesno ste zapratili proizvod");
+                }
+                return BadRequest("Nista");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("UnFollowProduct/{IDUser}/{IDProduct}")]
+        public IActionResult UnFollowProduct(int IDUser, int IDProduct)
+        {
+            try
+            {
+                Task<bool> res = _userServices.UnFollowProduct(IDUser, IDProduct);
+                bool res1 = res.Result;
+                if (res1)
+                {
+                    return Ok("Uspesno ste otpratili proizvod");
+                }
+                return BadRequest("Nista");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

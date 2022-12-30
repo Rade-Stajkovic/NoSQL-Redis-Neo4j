@@ -17,5 +17,40 @@ namespace NBP_backend.Services
         {
             _client = client;
         }
+
+        public List<Product> GetAll()
+        {
+            List<Product> products = new List<Product>();
+           
+            var res = _client.Cypher.Match("(n:Product)")
+                                     .Return(n => n.As<Product>()).ResultsAsync.Result;
+            var us = res.ToList();
+            foreach (var x in res)
+            {
+                products.Add(x);
+            }
+            return products;
+        }
+
+        public async void CreateProduct(String name)
+        {
+            Product product = new Product();
+            product.Name = name;
+            await _client.Cypher
+                      .Create("(n:Product $dept)")
+                      .WithParam("dept", product)
+                      .ExecuteWithoutResultsAsync();
+        }
+
+        public async void DeleteProduct(String ID)
+        {
+            await _client.Cypher.Match("(p:Product)")
+                                .Where("id(p) = $ID")
+                                .WithParam("ID", ID)
+                                
+                                .Delete("p")
+                                .ExecuteWithoutResultsAsync();
+
+        }
     }
 }

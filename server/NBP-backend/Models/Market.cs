@@ -8,13 +8,19 @@ namespace NBP_backend.Models
     public class Market
     {
         
-        int ID;
+        public int ID { get; set; }
         
-        String Name;
+        public String Name { get; set; }
 
-        List<Stored> StoredProducts;
+         public List<Stored> StoredProducts
+        {
+            get; set;
+        }
 
-        List<Category> Categories;
+        public List<Category> Categories
+        {
+            get; set;
+        }
 
 
     }

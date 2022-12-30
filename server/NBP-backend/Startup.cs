@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NBP_backend.Services;
 
 namespace NBP_backend
 {
@@ -34,6 +35,7 @@ namespace NBP_backend
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "NBP_backend", Version = "v1" });
             });
 
+            services.AddSingleton<UserServices>();
             var client = new BoltGraphClient(new Uri("bolt://localhost:7687"), "neo4j", "edukacija");
             client.ConnectAsync();
             services.AddSingleton<IGraphClient>(client);

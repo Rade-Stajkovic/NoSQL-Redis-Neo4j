@@ -26,7 +26,7 @@ namespace NBP_backend.Services
             //var users2 = _client.Cypher.Match("(n:WeatherForecast)")
             //                         .Return(n => n.As<User>()).ResultsAsync;
             var res = _client.Cypher.Match("(n:User)")
-                                     .Return(n => n.As<User>()).ResultsAsync.Result;
+                                    .Return(n => n.As<User>()).ResultsAsync.Result;
             var us = res.ToList();
             foreach (var x in res)
             {

@@ -21,9 +21,5 @@ namespace NBP_backend.Models
         public  List<Product> Searched { get; set; }
 
 
-
-
-
-
     }
 }

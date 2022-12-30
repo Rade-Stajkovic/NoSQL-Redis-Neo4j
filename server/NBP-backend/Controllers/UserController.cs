@@ -37,14 +37,10 @@ namespace NBP_backend.Controllers
 
     
         [HttpPost]
-        [Route("CreateUser")]
-        public async Task<IActionResult> Create([FromBody] User user)
+        [Route("CreateUser/{username}/{password}")]
+        public async Task<IActionResult> Create(String username, String password)
         {
-            //await_client.Cypher.Create("(n:WeatherForecast $dept)")
-            //                    .WithParam("dept", wf)
-            //
-            //  .ExecuteWithoutResultsAsync();
-            _userServices.CreateUser(user);
+            _userServices.CreateUser(username, password);
             return Ok("Uspelo");
         }
     }

@@ -9,9 +9,9 @@ namespace NBP_backend.Models
     public class Category
     {
         
-        public int ID { get; set; }
+        public int tempID { get; set; }
 
-         public String Name
+        public String Name
         {
             get; set;
         }

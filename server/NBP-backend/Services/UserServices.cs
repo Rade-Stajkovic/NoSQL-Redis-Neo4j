@@ -7,6 +7,7 @@ using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
 using Neo4jClient.Cypher;
+using Neo4j.Driver;
 
 namespace NBP_backend.Services
 
@@ -63,20 +64,22 @@ namespace NBP_backend.Services
             {
                 var userr = await _client.Cypher.Match("(d:User)")
                                                 .Where((User d) => d.UserName == username)
-                                                .Return(d => d.As<User>()).ResultsAsync;
+                                                .With("d{.*, returnID:id(d)} as u")
+                                                .Return(u => u.As<User>()).ResultsAsync;
                 var sr = userr.FirstOrDefault();
+
                 if (sr != null)
                 {
                     if (sr.Password == password)
                     {
-                        return 1;
+                        return sr.returnID;
                     }
                     else
                     {
                         return -1;
                     }
                 }
-                return 0;
+                return -2;
             }
             catch(Exception e)
             {

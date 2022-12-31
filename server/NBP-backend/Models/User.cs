@@ -8,6 +8,8 @@ namespace NBP_backend.Models
 {
     public class User
     {
+        public int returnID { get; set; }
+
         public String Name { get; set; }
 
         public String Surname { get; set; }

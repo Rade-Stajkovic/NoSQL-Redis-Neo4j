@@ -56,8 +56,8 @@ namespace NBP_backend.Controllers
                 {
                     return BadRequest("Pogresna sifra");
                 }
-                else if (res1 == 1) return Ok("Uspesno logovanje");
-                return BadRequest("Korisnik ne postoji");
+                else if(res1==-2) return BadRequest("Korisnik ne postoji");
+                return Ok(res1);
             }
             catch(Exception e)
             {
@@ -85,7 +85,7 @@ namespace NBP_backend.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpDelete]
         [Route("UnFollowProduct/{IDUser}/{IDProduct}")]
         public IActionResult UnFollowProduct(int IDUser, int IDProduct)
         {

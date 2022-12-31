@@ -50,7 +50,7 @@ namespace NBP_backend.Services
             user.UserName = username;
             user.Password = password;
             user.Name = Name;
-            user.SurName = SurName;
+            user.Surname = SurName;
             await _client.Cypher
                       .Create("(n:User $dept)")
                       .WithParam("dept", user)

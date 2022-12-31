@@ -10,7 +10,7 @@ namespace NBP_backend.Models
     {
         public String Name { get; set; }
 
-        public String SurName { get; set; }
+        public String Surname { get; set; }
 
         public String UserName { get; set; }
 

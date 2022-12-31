@@ -23,7 +23,9 @@ namespace NBP_backend.Services
             List<Market> markets = new List<Market>();
 
             var res = _client.Cypher.Match("(n:Market)")
-                                     .Return(n => n.As<Market>()).ResultsAsync.Result;
+                                    .Return(n => n.As<Market>()).ResultsAsync.Result;
+                 
+                                    
             var us = res.ToList();
             foreach (var x in res)
             {
@@ -32,6 +34,24 @@ namespace NBP_backend.Services
             return markets;
         }
 
+        public List<Product> GetAllProducts(int IDMarket)
+        {
+            List<Product> products = new List<Product>();
+
+         
+
+            var res = _client.Cypher.Match("(n:Market)<-[STORED_IN]-(p:Product)")
+                                    .Where("id(n) = $IDM")
+                                    .WithParam("IDM", IDMarket)
+
+                                    .Return(p => p.As<Product>()).ResultsAsync.Result;
+            var us = res.ToList();
+            foreach (var x in res)
+            {
+                products.Add(x);
+            }
+            return products;
+        }
         public async void CreateMarket(String name)
         {
             Market market = new Market();
@@ -93,6 +113,34 @@ namespace NBP_backend.Services
 
         }
 
+        public async Task<bool> ChangeRelAttributes(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable)
+        {
+            IDictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("ID", IDMarket);
+            dict.Add("ID2", IDProduct);
+
+            IDictionary<string, object> dict2 = new Dictionary<string, object>();
+            dict2.Add("newPrice", newPrice);
+            dict2.Add("newSale", newSale);
+            dict2.Add("newAvailable", newAvailable);
+            try
+            {
+                await _client.Cypher.Match("(d:Product)-[v:STORED_IN]-(c:Market)")
+                                    .Where("id(d) = $ID2 AND id(c) = $ID")
+                                    .WithParams(dict)
+                                    .Set("v.price = $newPrice, v.sale = $newSale, v.available =  $newAvailable ")
+                                    .WithParams(dict2).ExecuteWithoutResultsAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return false;
+            }
+
+
+        }
+
         public async Task<bool> UnstoreProduct(int IDMarekt, int IDProduct)
         {
             IDictionary<string, object> dict = new Dictionary<string, object>();
@@ -116,5 +164,7 @@ namespace NBP_backend.Services
 
 
         }
+
+        
     }
 }

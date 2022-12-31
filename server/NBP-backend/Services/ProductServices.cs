@@ -32,6 +32,26 @@ namespace NBP_backend.Services
             return products;
         }
 
+        public List<Product> SearchProducts(String search)
+        {
+            List<Product> products = new List<Product>();
+
+            String name = ".*" + search + ".*";
+
+
+            var res = _client.Cypher.Match("(n:Product)")
+                                    .Where("n.Name =~ $name ")
+                                    .WithParam("name", name)
+                                    .Return(n => n.As<Product>()).ResultsAsync.Result;
+            var us = res.ToList();
+            foreach (var x in res)
+            {
+                products.Add(x);
+            }
+            return products;
+        }
+
+
         public async void CreateProduct(String name)
         {
             Product product = new Product();

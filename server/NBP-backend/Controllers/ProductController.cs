@@ -29,6 +29,14 @@ namespace NBP_backend.Controllers
         }
 
 
+        [HttpGet]
+        [Route("SearchProducts/{search}")]
+
+        public async Task<IActionResult> Search(String search)
+        {
+            return Ok(_productServices.SearchProducts(search));
+        }
+
         [HttpPost]
         [Route("CreateProduct/{name}")]
         public async Task<IActionResult> Create(String name)

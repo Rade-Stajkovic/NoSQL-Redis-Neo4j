@@ -28,6 +28,15 @@ namespace NBP_backend.Controllers
         }
 
 
+        [HttpGet]
+        [Route("GetAllProducts/{idMarket}")]
+
+        public async Task<IActionResult> GetAll(int idMarket)
+        {
+            return Ok(_marketServices.GetAllProducts(idMarket));
+        }
+
+
         [HttpPost]
         [Route("CreateMarket/{name}")]
         public async Task<IActionResult> Create(String name)
@@ -48,7 +57,7 @@ namespace NBP_backend.Controllers
      
         [HttpPut]
 
-         [Route("FollowProduct/{IDMarket}/{IDProduct}/{price}/{sale}/{available}")]
+         [Route("StoreProduct/{IDMarket}/{IDProduct}/{price}/{sale}/{available}")]
         public IActionResult FollowProduct(int IDMarket, int IDProduct, int price, bool sale, bool available)
         {
             try
@@ -68,7 +77,27 @@ namespace NBP_backend.Controllers
         }
 
         [HttpPut]
-        [Route("UnFollowProduct/{IDMarket}/{IDProduct}")]
+        [Route("ChangeRelAttributes/{IDMarket}/{IDProduct}/{newPrice}/{newSale}/{newAvailable}")]
+        public IActionResult UnFollowProduct(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable)
+        {
+            try
+            {
+                Task<bool> res = _marketServices.ChangeRelAttributes(IDMarket, IDProduct, newPrice, newSale, newAvailable);
+                bool res1 = res.Result;
+                if (res1)
+                {
+                    return Ok("Uspesno ste promnili vrednosti proizvod");
+                }
+                return BadRequest("Nista");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("UnstoreProduct/{IDMarket}/{IDProduct}")]
         public IActionResult UnFollowProduct(int IDMarket, int IDProduct)
         {
             try

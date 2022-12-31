@@ -1,9 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
+import {Route} from 'react-router-dom';
+import Navigacija from './komponente/Navigacija/Navigacija';
+import Logovanje from './komponente/Logovanje/Logovanje';
+import Rute from './Routes';
 
 function App() {
   return (
-    <div className="App">
+    /*<div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -18,6 +22,12 @@ function App() {
           Learn React
         </a>
       </header>
+    </div>*/
+    <div>
+      
+        <Rute />
+ 
+      
     </div>
   );
 }

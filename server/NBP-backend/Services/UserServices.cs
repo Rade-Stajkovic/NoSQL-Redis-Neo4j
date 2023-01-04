@@ -8,6 +8,8 @@ using NBP_backend.Models;
 using System.Collections;
 using Neo4jClient.Cypher;
 using Neo4j.Driver;
+using NBP_backend.Cache;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace NBP_backend.Services
 
@@ -15,18 +17,23 @@ namespace NBP_backend.Services
     public class UserServices
     {
         private readonly IGraphClient _client;
-      
 
-        public UserServices(IGraphClient client)
+        private ICacheProvider cacheProvider { get; set; }
+        public UserServices(IGraphClient client, ICacheProvider cacheProvider)
         {
             _client = client;
+            this.cacheProvider = cacheProvider;
         }
 
         public  List<User> GetAll()
         {
+
+            //List<string> l1 =  await db.ListRangeAsnyc() 
+
             List<User> users = new List<User>();
             //var users2 = _client.Cypher.Match("(n:WeatherForecast)")
             //                         .Return(n => n.As<User>()).ResultsAsync;
+            
             var res = _client.Cypher.Match("(n:User)")
                                     .Return(n => n.As<User>()).ResultsAsync.Result;
             var us = res.ToList();
@@ -35,6 +42,8 @@ namespace NBP_backend.Services
                 users.Add(x);
             }
             return users;
+
+            
         }
 
         public async void CreateUser(User user)
@@ -56,12 +65,19 @@ namespace NBP_backend.Services
                       .Create("(n:User $dept)")
                       .WithParam("dept", user)
                       .ExecuteWithoutResultsAsync();
+           
         }
 
         public async Task<int> LogInUser(String username, String password)
         {
             try
             {
+                var redis = await cacheProvider.GetAsync<User>(username);
+                if(redis != null)
+                {
+                    return redis.returnID;
+                }
+
                 var userr = await _client.Cypher.Match("(d:User)")
                                                 .Where((User d) => d.UserName == username)
                                                 .With("d{.*, returnID:id(d)} as u")
@@ -72,6 +88,7 @@ namespace NBP_backend.Services
                 {
                     if (sr.Password == password)
                     {
+                        await cacheProvider.SetAsync(username, sr, new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24) });
                         return sr.returnID;
                     }
                     else
@@ -95,6 +112,11 @@ namespace NBP_backend.Services
             dict.Add("ID2", IDProduct);
             try
             {
+                //var rel = await _client.Cypher.Match("(d:User)-[v:FOLLOWING]-(c:Product)")
+                //                  .Where("id(d) = $ID AND id(c) = $ID2")
+                //                  .WithParams(dict)
+                               
+
                 await _client.Cypher.Match("(d:User), (c:Product)")
                                     .Where("id(d) = $ID AND id(c) = $ID2")
                                     .WithParams(dict)
@@ -115,8 +137,10 @@ namespace NBP_backend.Services
             IDictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("ID", IDUser);
             dict.Add("ID2", IDProduct);
+
             try
             {
+               
                 await _client.Cypher.Match("(d:User)-[v:FOLLOWING]-(c:Product)")
                                     .Where("id(d) = $ID AND id(c) = $ID2")
                                     .WithParams(dict)

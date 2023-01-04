@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NBP_backend.Services;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using NBP_backend.Cache;
 
 namespace NBP_backend
 {
@@ -42,6 +44,12 @@ namespace NBP_backend
             var client = new BoltGraphClient(new Uri("bolt://localhost:7687"), "neo4j", "edukacija");
             client.ConnectAsync();
             services.AddSingleton<IGraphClient>(client);
+
+            services.AddTransient<ICacheProvider, CacheProvider>();
+            services.AddStackExchangeRedisCache(options => {
+                options.Configuration = Configuration.GetConnectionString("Redis");
+              }
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

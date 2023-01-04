@@ -18,7 +18,7 @@ namespace NBP_backend.Controllers
 
       
 
-        private readonly ILogger<UserController> _logger;
+        //private readonly ILogger<UserController> _logger;
 
         public UserController(UserServices userServices)
         {

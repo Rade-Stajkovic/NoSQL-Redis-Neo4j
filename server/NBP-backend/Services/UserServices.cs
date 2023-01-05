@@ -73,7 +73,7 @@ namespace NBP_backend.Services
             try
             {
                 var redis = await cacheProvider.GetAsync<User>(username);
-                if(redis != null)
+                if (redis != null)
                 {
                     return redis.returnID;
                 }

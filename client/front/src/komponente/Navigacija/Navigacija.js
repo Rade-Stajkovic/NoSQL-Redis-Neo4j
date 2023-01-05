@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Logovanje from '../Logovanje/Logovanje';
+import Proizvod from '../Proizvod/Proizvod';
 
 
 import {
@@ -90,6 +91,10 @@ export default function Navigacija() {
           <MDBNavbarItem >
           <MDBNavbarLink href="/logovanje" color='primary'>Prijava</MDBNavbarLink>
           </MDBNavbarItem>
+          <MDBNavbarItem >
+          <MDBNavbarLink href="/proizvod" color='primary'>Proizvodi</MDBNavbarLink>
+          </MDBNavbarItem>
+          
           
 
         </MDBCollapse>

@@ -6,6 +6,7 @@ import * as mdb from 'mdb-react-ui-kit';
 import { Spinner, Container } from 'react-bootstrap';
 import { Switch } from 'react-router-dom';
 import Registracija from './komponente/Registracija/Registracija';
+import Proizvod from './komponente/Proizvod/Proizvod';
 
 
 function Rute ()
@@ -16,11 +17,14 @@ function Rute ()
        
         <Navigacija />
     
-        <div style={{paddingTop:"57px"}}>
+        <div >
         <BrowserRouter>
         <Routes>  
             <Route path='/logovanje' element={<Logovanje />} />
             <Route path='/registracija' element={<Registracija/>} />
+            <Route path='/proizvod' element={<Proizvod/>} />
+            
+            <Route path='/' element={<Pocetna/>} />
            
            
         </Routes>

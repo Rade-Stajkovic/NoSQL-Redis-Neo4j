@@ -39,7 +39,7 @@ function Registracija() {
       if (checkbox.checked) {
         console.log(formValue); 
       } else {
-        const checkboxValidationItem = document.getElementById('checkboxValidationItem');
+        const checkboxValidationItem = document.getElementById('invalidCheck');
         checkboxValidationItem.setAttribute('valid', true);
       }
     } else {

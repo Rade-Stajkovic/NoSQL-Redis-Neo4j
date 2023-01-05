@@ -44,7 +44,7 @@ namespace NBP_backend.Services
                                     .Where("id(n) = $IDM")
                                     .WithParam("IDM", IDMarket)
 
-                                    .Return(p => p.As<Product>()).ResultsAsync.Result;
+                                    .Return(p => p.As<Product>()).ResultsAsync.Result.Distinct();
             var us = res.ToList();
             foreach (var x in res)
             {

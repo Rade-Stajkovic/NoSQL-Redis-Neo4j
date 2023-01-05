@@ -10,6 +10,7 @@ using Neo4jClient.Cypher;
 using Neo4j.Driver;
 using NBP_backend.Cache;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace NBP_backend.Services
 
@@ -35,13 +36,20 @@ namespace NBP_backend.Services
             //                         .Return(n => n.As<User>()).ResultsAsync;
             
             var res = _client.Cypher.Match("(n:User)")
+                                    .With("n{.*, returnID:id(n)} as n")
                                     .Return(n => n.As<User>()).ResultsAsync.Result;
             var us = res.ToList();
             foreach (var x in res)
             {
                 users.Add(x);
             }
+
+            foreach (var r in users)
+            {
+                cacheProvider.SetInHashSet("users", r.returnID.ToString(), JsonSerializer.Serialize(r));
+            }
             return users;
+
 
             
         }

@@ -17,13 +17,16 @@ function Rute ()
        
         <Navigacija />
     
-        <div style={{paddingTop:"57px"}}>
+        <div >
         <BrowserRouter>
         <Routes>  
             <Route path='/logovanje' element={<Logovanje />} />
             <Route path='/registracija' element={<Registracija/>} />
             <Route path='/proizvod' element={<Proizvod/>} />
             
+            <Route path='/' element={<Pocetna/>} />
+           
+           
         </Routes>
         </BrowserRouter>
         </div>

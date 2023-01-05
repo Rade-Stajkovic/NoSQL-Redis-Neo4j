@@ -21,10 +21,20 @@ import {
   MDBBadge
 } from 'mdb-react-ui-kit';
 
-export default function Navigacija() {
-  const [showBasic, setShowBasic] = useState(false);
+const Navigacija = (props) =>
+{
+  const[login, setlogin]= useState("");
 
+  function loginshow()
+  {
+    setlogin(true);
+  }
+  function loginhide()
+  {
+    setlogin(false);
+  }
   return (
+    
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer fluid>
         <MDBNavbarBrand href='#'>Brand</MDBNavbarBrand>
@@ -34,12 +44,12 @@ export default function Navigacija() {
           aria-expanded='false'
           aria-label='Toggle navigation'
           
-          onClick={() => setShowBasic(!showBasic)}
+          
         >
           <MDBIcon icon='bars' fas />
         </MDBNavbarToggler>
 
-        <MDBCollapse navbar show={showBasic}>
+        <MDBCollapse navbar >
           <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
             <MDBNavbarItem>
               <MDBNavbarLink active aria-current='page' href='#'>
@@ -87,9 +97,15 @@ export default function Navigacija() {
             <MDBBtn color='primary'><MDBIcon fas icon="search" /></MDBBtn>
           </form>
 
-          <MDBNavbarItem >
+          {/* <MDBNavbarItem >
           <MDBNavbarLink href="/logovanje" color='primary'>Prijava</MDBNavbarLink>
+          </MDBNavbarItem> */}
+
+          <MDBNavbarItem>
+            <MDBNavbarLink onClick={loginshow} eventkey={2} >Prijavi se</MDBNavbarLink>
           </MDBNavbarItem>
+
+          <Logovanje show={login} onHide={loginhide}></Logovanje>
           
 
         </MDBCollapse>
@@ -97,3 +113,4 @@ export default function Navigacija() {
     </MDBNavbar>
   );
 }
+export default Navigacija;

@@ -83,7 +83,9 @@ namespace NBP_backend.Services
                 var redis = await cacheProvider.GetAsync<User>(username);
                 if (redis != null)
                 {
-                    return redis.returnID;
+                    if (redis.Password == password)
+                         return redis.returnID;
+                    return -1;
                 }
 
                 var userr = await _client.Cypher.Match("(d:User)")
@@ -163,5 +165,7 @@ namespace NBP_backend.Services
 
 
         }
+
+     
     }
 }

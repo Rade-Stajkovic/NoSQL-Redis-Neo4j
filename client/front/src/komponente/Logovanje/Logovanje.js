@@ -1,4 +1,11 @@
-import React from 'react';
+
+
+import {useState} from "react";
+import {useHistory} from"react-router-dom";
+import React from "react";
+import {Form, Button, CloseButton} from "react-bootstrap";
+import { Modal, ModalBody } from "react-bootstrap";
+
 import {
   MDBBtn,
   MDBContainer,
@@ -8,51 +15,114 @@ import {
   MDBRow,
   MDBCol,
   MDBIcon,
-  MDBInput
+  MDBInput,
+  MDBModal,
+  MDBModalBody,
+  MDBModalHeader,
+  MDBModalTitle,
+  MDBModalFooter
 }
 from 'mdb-react-ui-kit';
 
-function Logovanje() {
-  return (
-    <MDBContainer className="my-5">
+
+
+
+let Korisnikk =[];
+let obj;
+function Logovanje(props)
+{
+    const{
+        show,
+        onHide
+    }= props;
+    const[username, setUserName]=useState("");
+    const[password, setPassword]=useState("");
+    
+
+
+    async function login()
+    {
+        
+        console.log(username, password);
+        
+    }
+  
+
+    return(
+        <Modal
+          {...props}
+        size="lg"
+          
+        
+        centered
+      >
+         
+        <Modal.Header closeButton >
+        
+        </Modal.Header>
+        <Modal.Body className="py-0">
+        <MDBContainer className="py-0" >
 
       <MDBCard>
-        <MDBRow className='g-0' center>
+         <MDBRow className='g-0' >
 
-          <MDBCol md='4' center >
-            <MDBCardImage src='https://as2.ftcdn.net/v2/jpg/05/28/55/97/1000_F_528559716_az7F03Lp6XZvtkADvj6goWONc45Xgf0z.jpg' alt="login form" className='rounded-start w-100'/>
-          </MDBCol>
+         <MDBCol md='6' center >
+             <MDBCardImage src='https://as2.ftcdn.net/v2/jpg/05/28/55/97/1000_F_528559716_az7F03Lp6XZvtkADvj6goWONc45Xgf0z.jpg' alt="login form" className='rounded-start w-100'/>
+           </MDBCol>
 
-          <MDBCol md='3'>
-            <MDBCardBody className='d-flex flex-column'>
+           <MDBCol md='6'>
+             <MDBCardBody className='d-flex flex-column'>
 
               <div className='d-flex flex-row mt-2'>
                 
-                <span className="h1 fw-bold mb-0">Uloguj se!</span>
-              </div>
+                 <span className="h1 fw-bold mb-0 mt-3">Uloguj se!</span>
+               </div>
 
-              <h5 className="fw-normal my-4 pb-3" style={{letterSpacing: '1px'}}>Prijavi se na svoj profil</h5>
+               <h5 className="fw-normal my-4 pb-3" style={{letterSpacing: '1px'}}>Prijavi se na svoj profil</h5>
 
-                <MDBInput wrapperClass='mb-4' label='Email adresa' id='formControlLg' type='email' size="lg"/>
-                <MDBInput wrapperClass='mb-4' label='Lozinka' id='formControlLg' type='password' size="lg"/>
+                 <MDBInput wrapperClass='mb-4' label='Korisničko ime' id='formControlLg' type='username' size="lg" onChange={(e)=>setUserName(e.target.value)}/>
+                 <MDBInput wrapperClass='mb-4' label='Lozinka' id='formControlLg' type='password' size="lg"  onChange={(e)=>setPassword(e.target.value)}/>
 
-              <MDBBtn className="mb-4 px-5" color='dark' size='lg'>Prijavi se</MDBBtn>
+               <MDBBtn className="mb-4 px-5"  size='lg'  onClick={login}>Prijavi se</MDBBtn>
               
-              <p className="mb-5 pb-lg-2" style={{color: '#393f81'}}>Nemas nalog? <a href="/registracija" style={{color: '#393f81'}}>Registruj se ovde.</a></p>
+               <p className="mb-5 pb-lg-2" style={{color: '#393f81'}}>Nemas nalog? <a href="/registracija" style={{color: '#393f81'}}>Registruj se ovde.</a></p>
 
-              <div className='d-flex flex-row justify-content-start'>
-                <a href="#!" className="small text-muted me-1">Terms of use.</a>
-                <a href="#!" className="small text-muted">Privacy policy</a>
-              </div>
+              
 
-            </MDBCardBody>
-          </MDBCol>
+             </MDBCardBody>
+           </MDBCol>
 
-        </MDBRow>
-      </MDBCard>
+         </MDBRow>
+       </MDBCard>
 
-    </MDBContainer>
-  );
-}
+     </MDBContainer>
+        </Modal.Body>
+      
+  
+        
+        {/* <Form.Group style={{marginLeft:'40px', marginRight:'100px'}} >
+                        <Button   style={{marginLeft:'40px', marginRight:'100px', border:'none'}}
+                        onClick={login}>Prijavi se</Button>
+                        
+                        </Form.Group >
+                        <Form.Group style={{marginRight:'150px'}}><a href ="/registracija" style={{color:"gray"}}>Nemaš nalog? Registruj se!</a>
+                        
+                        </Form.Group> */}
+        
+                        
 
+                        
+                   
+        
+      </Modal>
+        
+    );
+    }
 export default Logovanje;
+
+
+
+
+
+
+

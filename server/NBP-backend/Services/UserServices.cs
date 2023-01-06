@@ -24,7 +24,7 @@ namespace NBP_backend.Services
             _client = client;
             this.cacheProvider = cacheProvider;
         }
-
+        /*Pregledani*/
         public  List<User> GetAll()
         {
 
@@ -154,6 +154,54 @@ namespace NBP_backend.Services
             }
 
 
+        }
+
+        public async Task<bool> SearchedProducts(int IDUser, int IDProduct)
+        {
+            IDictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("ID", IDUser);
+            dict.Add("ID2", IDProduct);
+            try
+            {
+                //klikom na proizvod..
+                await _client.Cypher.Match("(d:User), (c:Product)")
+                                    .Where("id(d) = $ID AND id(c) = $ID2")
+                                    .WithParams(dict)
+                                    .Create("(d)-[:SEARCHED]->(c)").ExecuteWithoutResultsAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return false;
+            }
+        }
+
+        public List<Product> GetRecommended (int IDUser)
+        {
+            List<Product> products = new List<Product>();
+            var prod =  _client.Cypher.Match("(d:User)-[v:SEARCHED]-(c:Product), (c:Product)-[:IN]-(cat:Category)")
+                                   .Where("id(d) = $ID ")
+                                   .With("c{.*, ID:id(d)} as c, cat{.*, tempID:id(cat)} as cat")
+                                   .WithParam("ID", IDUser)
+                                   .Return(cat => cat.As<Category>()).ResultsAsync.Result;
+
+            var cat = prod.FirstOrDefault();
+
+
+            var prod2 =  _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
+                                   .Where("id(c) = $ID ")
+                                   .WithParam("ID", cat.tempID)
+                                   .Return(d => d.As<Product>()).ResultsAsync.Result;
+            //var cat2 = cat.FirstOrDefault();
+            var prod22 = prod2.ToList();
+            //var products = 
+            foreach (var product in prod22)
+            {
+                products.Add(product);
+            }
+
+            return products;
         }
     }
 }

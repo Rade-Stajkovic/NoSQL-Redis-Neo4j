@@ -104,5 +104,43 @@ namespace NBP_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetRecommended/{IDUser}")]
+        public async Task<IActionResult> GetRecommended(int IDUser)
+        {
+            //var rng = await _client.Cypher.Match("(n:WeatherForecast)")
+            //                              .Return(n => n.As<User>()).ResultsAsync;
+            //async itd..
+            try
+            {
+                List<Product> prod = _userServices.GetRecommended(IDUser);
+                return Ok(prod);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("SearchedProducts/{IDUser}/{IDProduct}")]
+        public IActionResult SearchedProducts(int IDUser, int IDProduct)
+        {
+            try
+            {
+                Task<bool> res = _userServices.SearchedProducts(IDUser, IDProduct);
+                bool res1 = res.Result;
+                if (res1)
+                {
+                    return Ok("Uspesno ste zapratili proizvod");
+                }
+                return BadRequest("Vec je pretrazen");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

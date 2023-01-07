@@ -3,6 +3,7 @@ using NBP_backend.Services;
 using System.Threading.Tasks;
 using System;
 using NBP_backend.Models;
+using System.Collections.Generic;
 
 namespace NBP_backend.Controllers
 {
@@ -56,6 +57,21 @@ namespace NBP_backend.Controllers
                     return Ok("Uspesno ste otpratili proizvod");
                 }
                 return BadRequest("Nista");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("GetAllProducts/{IDCat}")]
+        public IActionResult GetAll(int IDCat)
+        {
+            try
+            {
+                List<Product> prod = _categoryServices.GetAllProduct(IDCat);
+                return Ok(prod);
             }
             catch (Exception e)
             {

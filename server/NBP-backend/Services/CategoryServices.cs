@@ -73,7 +73,23 @@ namespace NBP_backend.Services
 
         }
 
-        
+        public  List<Product> GetAllProduct(int IDCat)
+        {
+            var prod = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
+                                   .Where("id(c) = $ID ")
+                                   .WithParam("ID", IDCat)
+                                   .Return(d => d.As<Product>()).ResultsAsync.Result;
+            var prod2 = prod.ToList();
+
+            List<Product> products = new List<Product>();
+
+            foreach (var product in prod2)
+            {
+                products.Add(product);
+            }
+
+            return products;
+        }
     }
 
     

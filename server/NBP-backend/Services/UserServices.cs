@@ -10,7 +10,6 @@ using Neo4jClient.Cypher;
 using Neo4j.Driver;
 using NBP_backend.Cache;
 using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
 
 namespace NBP_backend.Services
 
@@ -25,7 +24,7 @@ namespace NBP_backend.Services
             _client = client;
             this.cacheProvider = cacheProvider;
         }
-
+        /*Pregledani*/
         public  List<User> GetAll()
         {
 
@@ -36,20 +35,13 @@ namespace NBP_backend.Services
             //                         .Return(n => n.As<User>()).ResultsAsync;
             
             var res = _client.Cypher.Match("(n:User)")
-                                    .With("n{.*, returnID:id(n)} as n")
                                     .Return(n => n.As<User>()).ResultsAsync.Result;
             var us = res.ToList();
             foreach (var x in res)
             {
                 users.Add(x);
             }
-
-            foreach (var r in users)
-            {
-                cacheProvider.SetInHashSet("users", r.returnID.ToString(), JsonSerializer.Serialize(r));
-            }
             return users;
-
 
             
         }
@@ -83,9 +75,7 @@ namespace NBP_backend.Services
                 var redis = await cacheProvider.GetAsync<User>(username);
                 if (redis != null)
                 {
-                    if (redis.Password == password)
-                         return redis.returnID;
-                    return -1;
+                    return redis.returnID;
                 }
 
                 var userr = await _client.Cypher.Match("(d:User)")
@@ -166,6 +156,98 @@ namespace NBP_backend.Services
 
         }
 
-     
+        public async Task<bool> SearchedProducts(int IDUser, int IDProduct)
+        {
+            IDictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("ID", IDUser);
+            dict.Add("ID2", IDProduct);
+            try
+            {
+                var rez = await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
+                                              .Where("id(d) = $ID AND id(c) = $ID2")
+                                              .WithParams(dict)
+                                              .Return(d => d.As<User>()).ResultsAsync;
+                var rez2 = rez.FirstOrDefault();
+
+               
+                if (rez2 == null)
+                {
+                    await _client.Cypher.Match("(d:User), (c:Product)")
+                                    .Where("id(d) = $ID AND id(c) = $ID2")
+                                    .WithParams(dict)
+                                    .Create("(d)-[:SEARCHED {lastSearched:"+true+"}]->(c)").ExecuteWithoutResultsAsync();
+
+
+                    await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
+                                   .Where("id(d) = $ID AND id(c) <> $ID2")
+                                   .WithParams(dict)
+                                   .Set("rel.lastSearched =" + false)
+                                   .ExecuteWithoutResultsAsync();
+                    return true;
+                }
+                else
+                {
+                    await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
+                                 .Where("id(d) = $ID AND id(c) <> $ID2")
+                                 .WithParams(dict)
+                                 .Set("rel.lastSearched = $v")
+                                 .WithParam("v", false)
+                                 .ExecuteWithoutResultsAsync();
+
+                    await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
+                                        .Where("id(d) = $ID AND id(c) = $ID2")
+                                        .WithParams(dict)
+                                        .Set("rel.lastSearched = $v")
+                                        .WithParam("v",true)
+                                        .ExecuteWithoutResultsAsync();
+                    //await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
+                    //                    .Where("id(d) = $ID AND id(c) = $ID2")
+                    //                    .WithParams(dict)
+                    //                    .Delete("rel").ExecuteWithoutResultsAsync();
+
+                    //await _client.Cypher.Match("(d:User), (c:Product)")
+                    //                .Where("id(d) = $ID AND id(c) = $ID2")
+                    //                .WithParams(dict)
+                    //                .Create("(d)-[:SEARCHED]->(c)").ExecuteWithoutResultsAsync();
+
+                    return true;
+                }
+
+                //klikom na proizvod..
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return false;
+            }
+        }
+
+        public List<Product> GetRecommended (int IDUser)
+        {
+            List<Product> products = new List<Product>();
+            var prod =  _client.Cypher.Match("(d:User)-[v:SEARCHED]-(c:Product), (c:Product)-[:IN]-(cat:Category)")
+                                   .Where("id(d) = $ID AND v.lastSearched ="+true)
+                                   .With("c{.*, ID:id(d)} as c, cat{.*, tempID:id(cat)} as cat")
+                                   .WithParam("ID", IDUser)
+                                   .Return(cat => cat.As<Category>()).ResultsAsync.Result;
+
+            var cat = prod.FirstOrDefault();
+
+
+            var prod2 = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
+                                   .Where("id(c) = $ID ")
+                                   .WithParam("ID", cat.tempID)
+                                   .Return(d => d.As<Product>()).ResultsAsync.Result;
+            //var cat2 = cat.FirstOrDefault();
+            var prod22 = prod2.ToList();
+            //var products = 
+            foreach (var product in prod22)
+            {
+                products.Add(product);
+            }
+
+            return products;
+        }
     }
 }

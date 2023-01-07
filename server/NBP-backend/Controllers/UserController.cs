@@ -109,8 +109,6 @@ namespace NBP_backend.Controllers
         [Route("GetRecommended/{IDUser}")]
         public async Task<IActionResult> GetRecommended(int IDUser)
         {
-            //var rng = await _client.Cypher.Match("(n:WeatherForecast)")
-            //                              .Return(n => n.As<User>()).ResultsAsync;
             //async itd..
             try
             {
@@ -122,7 +120,8 @@ namespace NBP_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-
+        
+        //kreiraj ako postoji, ima kod bogdanovica 
         [HttpPut]
         [Route("SearchedProducts/{IDUser}/{IDProduct}")]
         public IActionResult SearchedProducts(int IDUser, int IDProduct)

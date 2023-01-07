@@ -116,6 +116,21 @@ namespace NBP_backend.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAllProductsOnSale/{IDMarket}")]
+        public IActionResult GetAllProductsOnSale(int IDMarket)
+        {
+            try
+            {
+                Task<List<Product>> res = _marketServices.GetAllProductsOnSale(IDMarket);
+                List<Product> products = res.Result.ToList();
+                return Ok(products);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
     }
 }

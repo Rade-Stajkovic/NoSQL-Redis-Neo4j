@@ -7,15 +7,20 @@ using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
 using Neo4jClient.Cypher;
+using NBP_backend.Cache;
+using System.Text.Json;
+
 namespace NBP_backend.Services
 {
     public class MarketServices
     {
         private readonly IGraphClient _client;
+        private readonly ICacheProvider _cacheProvider;
 
-        public MarketServices(IGraphClient client)
+        public MarketServices(IGraphClient client, ICacheProvider _cacheProvider)
         {
             _client = client;
+            this._cacheProvider = _cacheProvider;
         }
 
         public List<Market> GetAll()
@@ -52,6 +57,7 @@ namespace NBP_backend.Services
             }
             return products;
         }
+
         public async void CreateMarket(String name)
         {
             Market market = new Market();
@@ -159,12 +165,40 @@ namespace NBP_backend.Services
                 Console.WriteLine(e.StackTrace);
                 return false;
             }
-
-
-
-
         }
 
+        public async Task<List<Product>> GetAllProductsOnSale(int IDMarket)
+        { 
+            List<Product> products = new List<Product>();
+            string s = "MarketSale" + IDMarket;
+            var redis = _cacheProvider.GetAllFromHashSet<Product>(s);
+            if (redis.Count == 0)
+            {
+                try
+                {
+                    var prod = await _client.Cypher.Match("(d:Product)-[v:STORED_IN]-(c:Market)")
+                                        .Where("id(c) = $ID AND v.sale = " + true)
+                                        .With("d{.*, ID:id(d)} as u")
+                                        .WithParam("ID", IDMarket)
+                                        .Return(u => u.As<Product>()).ResultsAsync;
+                    var prod2 = prod.ToList();
+
+                    foreach (var p in prod2)
+                    {
+                        products.Add(p);
+                        _cacheProvider.SetInHashSet(s, p.ID.ToString(), JsonSerializer.Serialize(p));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                return products;
+            }
+
+            else return redis;
+            
+        }
         
     }
 }

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+
 import {
   MDBBtn,
   MDBContainer,
@@ -15,7 +16,9 @@ import {
 }
 from 'mdb-react-ui-kit';
 
+
 function Registracija() {
+
   const [formValue, setFormValue] = useState({
     fname: '',
     lname: '',
@@ -37,7 +40,9 @@ function Registracija() {
       
       const checkbox = document.getElementById('invalidCheck');
       if (checkbox.checked) {
-        console.log(formValue); 
+        
+        register();
+
       } else {
         const checkboxValidationItem = document.getElementById('invalidCheck');
         checkboxValidationItem.setAttribute('valid', true);
@@ -63,6 +68,34 @@ function Registracija() {
 
 
 }};
+
+async function register()
+{
+          console.log(formValue);    
+
+            let username=formValue.username;
+            let password=formValue.password;
+            let Name = formValue.fname;
+            let SurName=formValue.lname;
+            let result = await fetch('https://localhost:44332/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName, {
+              method: 'POST'
+            })
+            .then(response => {
+              console.log(response);
+              if (response.ok) {
+                alert("Uspeno ste se registrovali, sada mozete dase ulogujete i koristite aplikaciju!");
+              } else {
+                throw new Error('Something went wrong');
+              }
+            })
+            .catch(error => {
+              console.log(error);
+              console.log("GRESKAAAA");
+              alert("Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.");
+            });
+            
+}
+
   return (
     <MDBContainer fluid className='bg-secondary p-2 text-dark bg-opacity-10 d-flex justify-content-center' >
 

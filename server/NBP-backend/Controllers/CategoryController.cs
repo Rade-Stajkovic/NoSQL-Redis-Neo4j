@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System;
 using NBP_backend.Models;
 using System.Collections.Generic;
+using NBP_backend.Cache;
 
 namespace NBP_backend.Controllers
 {
@@ -11,9 +12,11 @@ namespace NBP_backend.Controllers
     {
         private readonly CategoryServices _categoryServices;
 
+       
         public CategoryController(CategoryServices CategoryServices)
         {
             _categoryServices = CategoryServices;
+           
         }
 
         [HttpPost]

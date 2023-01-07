@@ -172,10 +172,14 @@ namespace NBP_backend.Services
                
                 if (rez2 == null)
                 {
-                    await _client.Cypher.Match("(d:User), (c:Product)")
-                                    .Where("id(d) = $ID AND id(c) = $ID2")
-                                    .WithParams(dict)
-                                    .Create("(d)-[:SEARCHED {lastSearched:"+true+"}]->(c)").ExecuteWithoutResultsAsync();
+
+                   
+                                   
+
+                    //await _client.Cypher.Match("(d:User), (c:Product)")
+                    //                .Where("id(d) = $ID AND id(c) = $ID2")
+                    //                .WithParams(dict)
+                    //                .Create("(d)-[:SEARCHED {lastSearched:"+true+"}]->(c)").ExecuteWithoutResultsAsync();
 
 
                     await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
@@ -238,7 +242,7 @@ namespace NBP_backend.Services
             var prod2 = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
                                    .Where("id(c) = $ID ")
                                    .WithParam("ID", cat.tempID)
-                                   .Return(d => d.As<Product>()).ResultsAsync.Result;
+                                   .Return(d => d.As<Product>()).Limit(5).ResultsAsync.Result;
             //var cat2 = cat.FirstOrDefault();
             var prod22 = prod2.ToList();
             //var products = 

@@ -230,23 +230,32 @@ namespace NBP_backend.Services
         public List<Product> GetRecommended (int IDUser)
         {
             List<Product> products = new List<Product>();
-            var prod =  _client.Cypher.Match("(d:User)-[v:SEARCHED]-(c:Product), (c:Product)-[:IN]-(cat:Category)")
+            var rez =  _client.Cypher.Match("(d:User)-[v:SEARCHED]-(c:Product), (c:Product)-[:IN]-(cat:Category)")
                                    .Where("id(d) = $ID AND v.lastSearched ="+true)
                                    .With("c{.*, ID:id(d)} as c, cat{.*, tempID:id(cat)} as cat")
                                    .WithParam("ID", IDUser)
                                    .Return(cat => cat.As<Category>()).ResultsAsync.Result;
 
-            var cat = prod.FirstOrDefault();
+            var cat = rez.FirstOrDefault();
 
+            var rez2 = _client.Cypher.Match("(d:User)-[v:SEARCHED]-(c:Product), (c:Product)<-[:MANUFACTURED]-(man:Manufacturer)")
+                                   .Where("id(d) = $ID AND v.lastSearched =" + true)
+                                   .With("c{.*, ID:id(d)} as c, man{.*, ID:id(man)} as man")
+                                   .WithParam("ID", IDUser)
+                                   .Return(man => man.As<Manufacturer>()).ResultsAsync.Result;
+            var man = rez2.FirstOrDefault();
+            IDictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("ID", cat.tempID);
+            dict.Add("IDman", man.ID);
 
-            var prod2 = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
-                                   .Where("id(c) = $ID ")
-                                   .WithParam("ID", cat.tempID)
+            var rez3= _client.Cypher.Match("(m:Manufacturer)-[:MANUFACTURED]->(d:Product)-[v:IN]-(c:Category)")
+                                   .Where("id(c) = $ID AND id(m) = $IDman ")
+                                   .WithParams(dict)
                                    .Return(d => d.As<Product>()).Limit(5).ResultsAsync.Result;
             //var cat2 = cat.FirstOrDefault();
-            var prod22 = prod2.ToList();
+            var prod= rez3.ToList();
             //var products = 
-            foreach (var product in prod22)
+            foreach (var product in prod)
             {
                 products.Add(product);
             }

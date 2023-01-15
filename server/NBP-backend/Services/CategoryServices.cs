@@ -82,7 +82,7 @@ namespace NBP_backend.Services
         public  List<Product> GetAllProduct(int IDCat)
         {
             string idCat = IDCat.ToString();
-            var prodRedis = cacheProvider.GetAllFromHashSet<Product>(idCat);
+            var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category"+idCat);
             if(prodRedis.Count == 0)
             {
                 var prod = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
@@ -96,7 +96,7 @@ namespace NBP_backend.Services
                 foreach (var product in prod2)
                 {
                     products.Add(product);
-                    cacheProvider.SetInHashSet(idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
+                    cacheProvider.SetInHashSet("category"+idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
                 }
 
                

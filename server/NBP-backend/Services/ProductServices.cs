@@ -72,5 +72,7 @@ namespace NBP_backend.Services
                                 .ExecuteWithoutResultsAsync();
 
         }
+
+
     }
 }

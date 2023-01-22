@@ -9,6 +9,7 @@ using System.Collections;
 using Neo4jClient.Cypher;
 using NBP_backend.Cache;
 using System.Text.Json;
+using StackExchange.Redis;
 
 namespace NBP_backend.Services
 {
@@ -136,6 +137,11 @@ namespace NBP_backend.Services
                                     .WithParams(dict)
                                     .Set("v.price = $newPrice, v.sale = $newSale, v.available =  $newAvailable ")
                                     .WithParams(dict2).ExecuteWithoutResultsAsync();
+
+                var redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379");
+                ISubscriber pub = redisPubSub.GetSubscriber();
+                pub.Publish("banane", "ON SALE NOW!");
+
                 return true;
             }
             catch (Exception e)

@@ -10,6 +10,8 @@ using Neo4jClient.Cypher;
 using Neo4j.Driver;
 using NBP_backend.Cache;
 using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
+using System.Text.Json;
 
 namespace NBP_backend.Services
 
@@ -72,11 +74,14 @@ namespace NBP_backend.Services
         {
             try
             {
-                var redis = await cacheProvider.GetAsync<User>(username);
-                if (redis != null)
-                {
-                    return redis.returnID;
-                }
+                
+
+
+                //var redis = await cacheProvider.GetAsync<User>(username);
+                //if (redis != null)
+                //{
+                //    return redis.returnID;
+                //}
 
                 var userr = await _client.Cypher.Match("(d:User)")
                                                 .Where((User d) => d.UserName == username)
@@ -89,6 +94,25 @@ namespace NBP_backend.Services
                     if (sr.Password == password)
                     {
                         await cacheProvider.SetAsync(username, sr, new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24) });
+                        
+                        
+
+                        var redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379");
+                        ISubscriber sub = redisPubSub.GetSubscriber();
+                        var rez3 = _client.Cypher.Match("(n:User)-[:FOLLOWING]->(p:Product)")
+                                   .Where("id(n) ="+sr.returnID)
+                                   .With("p{.*, ID:id(p)} as p")
+                                   .Return(p => p.As<Product>()).ResultsAsync.Result;
+
+                        var listOfProducts = rez3.ToList();
+                        foreach (var product in listOfProducts)
+                        {
+                            sub.Subscribe(product.ID.ToString(), (chanel, message) =>
+                            {
+                                cacheProvider.SetInHashSet(product.ID.ToString(), product.ID.ToString(), JsonSerializer.Serialize(message));
+                            });
+                                    
+                        }
                         return sr.returnID;
                     }
                     else

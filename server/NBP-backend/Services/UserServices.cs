@@ -107,7 +107,7 @@ namespace NBP_backend.Services
                         var listOfProducts = rez3.ToList();
                         foreach (var product in listOfProducts)
                         {
-                            sub.Subscribe(product.ID.ToString(), (chanel, message) =>
+                            sub.Subscribe("JOCA", (chanel, message) =>
                             {
                                 cacheProvider.SetInHashSet(product.ID.ToString(), product.ID.ToString(), JsonSerializer.Serialize(message));
                             });

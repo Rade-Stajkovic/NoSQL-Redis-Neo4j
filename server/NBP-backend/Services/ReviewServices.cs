@@ -24,12 +24,13 @@ namespace NBP_backend.Services
             _cacheProvider = cacheProvider;
         }
 
-        public async void ReviewPoduct(String text, String username, int idProduct)
+        public async void ReviewPoduct(String text, String username, int idProduct,bool recommend)
         {
             Review review = new Review();
             review.Username = username;
             review.Text = text;
             review.date = DateTime.Now;
+            review.Recommend = recommend;
             var review_returned = await _client.Cypher
                       .Create("(n:Review $dept)")
                       .WithParam("dept", review)
@@ -52,6 +53,12 @@ namespace NBP_backend.Services
                         .Where("id(d) = $ID AND c.UserName = $username")
                         .WithParams(dict2)
                         .Create("(d)-[:MY_REVIEW]->(c)").ExecuteWithoutResultsAsync();
+
+         await _client.Cypher.Match("(p:Product)")
+                                    .Where("id(p) ="+idProduct)
+                                 
+                                    .Set("p.Reviews = p.Reviews + 1, p.GoodReviews = p.GoodReviews +" + (recommend ? 1 : 0))
+                                    .ExecuteWithoutResultsAsync();
         }
 
         public async void DeleteReviewPoduct(int idReview)

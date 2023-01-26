@@ -138,9 +138,20 @@ namespace NBP_backend.Services
                                     .Set("v.price = $newPrice, v.sale = $newSale, v.available =  $newAvailable ")
                                     .WithParams(dict2).ExecuteWithoutResultsAsync();
 
+                Notification notification = new Notification();
+                notification.ProductID = IDProduct;
+                notification.Market = "Maxi";
+                notification.Text = "Banane na akciji";
+                DateTime time = new DateTime();
+                
+                notification.Time = DateTime.Now;
                 var redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379");
+
                 ISubscriber pub = redisPubSub.GetSubscriber();
-                pub.Publish("banane", "ON SALE NOW!");
+                pub.Publish(IDProduct.ToString(), JsonSerializer.Serialize(notification));
+
+                NotificationServices ns = new NotificationServices(_client);
+                ns.CreateNotification(notification, IDProduct);
 
                 return true;
             }

@@ -120,7 +120,39 @@ namespace NBP_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
+
+        [HttpGet]
+        [Route("GetRecommendedSecond/{IDUser}")]
+        public async Task<IActionResult> GetRecommendedSecond(int IDUser)
+        {
+            //async itd..
+            try
+            {
+                List<Product> prod = _userServices.GetRecommendedSecond(IDUser);
+                return Ok(prod);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetRecommendedByUsers")]
+        public async Task<IActionResult> GetRecommendedByUsers()
+        {
+            //async itd..
+            try
+            {
+                List<Product> prod = _userServices.GetRecommendedByUsers();
+                return Ok(prod);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         //kreiraj ako postoji, ima kod bogdanovica 
         [HttpPut]
         [Route("SearchedProducts/{IDUser}/{IDProduct}")]

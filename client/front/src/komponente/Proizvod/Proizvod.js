@@ -1,4 +1,7 @@
 import React from "react";
+import * as signalR from "@microsoft/signalr";
+import { useState } from "react";
+
 import {
   MDBContainer,
   MDBRow,
@@ -10,9 +13,40 @@ import {
   MDBRipple,
   MDBBtn,
 } from "mdb-react-ui-kit";
+import { formatArrayBuffer } from "@microsoft/signalr/dist/esm/Utils";
 //import "./ecommerce-category-product.css";
 
 function Proizvod() {
+  
+  const [notification, setNotification] = useState(0);
+
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:44332/producthub")
+    .build();
+
+    
+
+    
+    connection.on("ProductNotification", (productId) => {
+       
+        //console.log(`Product ${productId.Text} is now on sale!`);
+        //console.log(productId);
+        let obj = JSON.parse(productId);
+        console.log(obj);
+        //setNotification(productId);
+        //console.log(notification);
+        // for (var key in productId)
+        // {
+        //   var dataForMap = productId[key];
+        //   console.log(dataForMap);
+        // }
+
+    });
+
+     connection.start();
+     //connection.invoke();
+
+
   return (
     <MDBContainer fluid>
       <MDBRow className="justify-content-center mb-0">

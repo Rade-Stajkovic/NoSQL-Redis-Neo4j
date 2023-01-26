@@ -53,5 +53,13 @@ namespace NBP_backend.Controllers
            _productServices.DeleteProduct(id);
             return Ok("Uspesno obrisan");
         }
+
+        [HttpGet]
+        [Route("GetMoreDetails/{IdProduct}")]
+
+        public async Task<IActionResult> GetMoreDetails(int IdProduct)
+        {
+            return new JsonResult(_productServices.GetMoreDetails(IdProduct));
+        }
     }
 }

@@ -112,7 +112,7 @@ namespace NBP_backend.Services
                         var listOfProducts = rez3.ToList();
                         foreach (var product in listOfProducts)
                         {
-                             sub.Subscribe(product.ID.ToString(), (channel, message) =>
+                            sub.Subscribe(product.ID.ToString(), (chanel, message) =>
                             {
                                    
                                

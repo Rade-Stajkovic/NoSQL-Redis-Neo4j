@@ -7,9 +7,7 @@ namespace NBP_backend.Models
 {
     public class Stored
     {
-        public Market Market { get; set; }
-
-        public Product Product { get; set; }
+        public string Market { get; set; }
 
         public double Price { get; set; }
 

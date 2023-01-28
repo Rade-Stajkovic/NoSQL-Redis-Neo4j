@@ -116,10 +116,7 @@ namespace NBP_backend.Services
                             {
                                    
                                
-                                cacheProvider.SetInHashSet($"proba2{product.ID}", product.ID.ToString(), message);
-                                //Console.WriteLine($"Received message {message} on channel {channel}");
-                                //String mess = message ;
-                                
+                                //cacheProvider.SetInHashSet($"proba2{product.ID}", product.ID.ToString(), message);
                                 _hub.Clients.All.SendAsync("ProductNotification",message.ToString());
 
                             });

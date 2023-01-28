@@ -46,6 +46,9 @@ namespace NBP_backend
             services.AddSingleton<ManufacturerServices>();
             services.AddSingleton<ReviewServices>();
             services.AddSingleton<NotificationServices>();
+            services.AddSingleton<OrderProductServices>();
+            services.AddSingleton<DeliveryServices>();
+
 
             var client = new BoltGraphClient(new Uri("neo4j+s://ea17674b.databases.neo4j.io"), "neo4j", "PbWMDupdf6n1LrZRBjibXkoJZ05YffMXokUZTFwyRrk");
             client.ConnectAsync();

@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Logovanje from '../Logovanje/Logovanje';
 import Proizvod from '../Proizvod/Proizvod';
+import { useState,useEffect } from "react";
+import axios from "axios";
 
 
 import {
@@ -25,6 +27,23 @@ import {
 const Navigacija = (props) =>
 {
   const[login, setlogin]= useState("");
+  const [categories, setCategories] = useState();
+  useEffect(()=>{
+    axios.get("https://localhost:44332/GetAllCategories")
+    .then(res => {
+      console.log(res)
+      setCategories(res.data)
+    })
+    
+    .catch(err => {
+      console.log(err)
+    })
+  },[])
+  
+  console.log(categories)
+
+
+
 
   function loginshow()
   {
@@ -34,6 +53,7 @@ const Navigacija = (props) =>
   {
     setlogin(false);
   }
+  
   return (
     
     <MDBNavbar expand='lg' light bgColor='light'>
@@ -57,16 +77,21 @@ const Navigacija = (props) =>
                 Početna
               </MDBNavbarLink>
             </MDBNavbarItem>
+            
+            
             <MDBNavbarItem>
-              <MDBNavbarLink href='#'>Namirnice</MDBNavbarLink>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBNavbarLink href='#'>Piće</MDBNavbarLink>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBNavbarLink href='#'>Hemija</MDBNavbarLink>
+              <MDBDropdown>
+                <MDBDropdownToggle tag='a' className='nav-link' role='button'>
+                 Kategorije
+                </MDBDropdownToggle>
+                <MDBDropdownMenu>
+      {categories ? categories.map(category => (
+        <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{color: '#393f81'}}>
+        {category.name}
+      </a></MDBDropdownItem>
+      )) : <p>Loading...</p>}
+    </MDBDropdownMenu>
+              </MDBDropdown>
             </MDBNavbarItem>
 
             <MDBNavbarItem>
@@ -105,10 +130,7 @@ const Navigacija = (props) =>
           <MDBNavbarItem>
             <MDBNavbarLink onClick={loginshow} eventkey={2} >Prijavi se</MDBNavbarLink>
           </MDBNavbarItem>
-          <MDBNavbarItem >
-          <MDBNavbarLink href="/proizvod" color='primary'>Proizvodi</MDBNavbarLink>
-          </MDBNavbarItem>
-          
+        
 
           <Logovanje show={login} onHide={loginhide}></Logovanje>
           

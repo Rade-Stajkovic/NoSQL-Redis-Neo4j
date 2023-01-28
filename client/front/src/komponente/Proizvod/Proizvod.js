@@ -6,108 +6,78 @@ import {
   MDBCard,
   MDBCardBody,
   MDBCardImage,
+  MDBCardTitle,
+  MDBCardText,
   MDBIcon,
   MDBRipple,
   MDBBtn,
 } from "mdb-react-ui-kit";
-//import "./ecommerce-category-product.css";
+import { Link } from "react-router-dom";
+
+
+
+
+import { useState,useEffect } from "react";
+import axios from "axios";
+import { useParams } from 'react-router-dom';
 
 function Proizvod() {
+  const { IDCat } = useParams();
+  const [products, setProducts] = useState([]);
+ 
+
+  useEffect(() => {
+    axios.put(`https://localhost:44332/GetAllProducts/${IDCat}`)
+      .then(res => {
+        setProducts(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [IDCat]);
+
+  console.log(products)
   return (
-    <MDBContainer fluid>
-      <MDBRow className="justify-content-center mb-0">
-        <MDBCol md="12" xl="10">
-          <MDBCard className="shadow-0 border rounded-3 mt-5 mb-3">
-            <MDBCardBody>
-              <MDBRow>
-                <MDBCol md="12" lg="3" className="mb-4 mb-lg-0">
-                  <MDBRipple
-                    rippleColor="light"
-                    rippleTag="div"
-                    className="bg-image rounded hover-zoom hover-overlay"
-                  >
-                    <MDBCardImage
-                      src="https://cegermarket.rs/wp-content/uploads/2020/06/ceger-market-banane.jpg"
-                      fluid
-                      className="w-100"
-                    />
-                    <a href="#!">
-                      <div
-                        className="mask"
-                        style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
-                      ></div>
-                    </a>
-                  </MDBRipple>
-                </MDBCol>
-                <MDBCol md="6">
-                  <h5>Banane kg</h5>
-                  <div className="d-flex flex-row">
-                    <div className="text-danger mb-1 me-2">
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                    </div>
-                    <span>5</span>
-                  </div>
-                  <div className="mt-1 mb-0 text-muted small">
-                    <span>Sifra Proizvoda</span>
-                    <span className="text-primary"> • </span>
-                    <span>481545555444</span>
-                    <span className="text-primary">  </span>
-                    {/* <span>
-                      najbolje
-                      <br />
-                    </span> */}
-                  </div>
-                  <div className="mb-2 text-muted small">
-                    <span>Kategorija</span>
-                    <span className="text-primary"> • </span>
-                    <span>voce</span>
-                    <span className="text-primary"> • </span>
-                    <span>
-                      povrce
-                      <br />
-                    </span>
-                  </div>
-                  {/* <p className="text-truncate mb-4 mb-md-0">
-                    JAKO DOBROG KVALITETA
-                  </p> */}
-                </MDBCol>
-                <MDBCol
-                  md="6"
-                  lg="3"
-                  className="border-sm-start-none border-start"
-                >
-                  <div className="d-flex flex-row align-items-center mb-1">
-                    <h4 className="mb-1 me-1">IDEA</h4>
-                    <h4 className="mb-1 me-1">139.9 din</h4>
-                    <span className="text-danger">
-                      <s>200.99</s>
-                    </span>
-                  </div>
-                  {/* <h6 className="text-success">Free shipping</h6> */}
-                  <div className="d-flex flex-column mt-4">
-                    <MDBBtn color="primary" size="sm">
-                      Zaprati
-                    </MDBBtn>
+    <div>
+      {products.length === 0 ? (
+        <div>No products found.</div>
+      ) : (
+        <MDBRow>
+          {products.map((e, index) => {
+            return (
+              <MDBCol md="4" key={index}>
+                <MDBCard  className="position-relative" >
+                  <MDBCardImage
+                    src="https://cegermarket.rs/wp-content/uploads/2020/06/ceger-market-banane.jpg"
+                    fluid
+                    className="w-100"
+                    alt={e.name}
+                  />
+   <MDBCardBody>
+        <MDBRow className="d-flex justify-content-center align-items-center">
+            <MDBCol>
+                <MDBCardTitle className="text-center">{e.name}</MDBCardTitle>
+                <div className="text-center">
+                <a href={`/proizvod/${e.id}`}>
                     <MDBBtn outline color="primary" size="sm" className="mt-2">
-                      Dodaj u listu
+                        OPSIRNIJE
                     </MDBBtn>
-                
-                  </div>
-                </MDBCol>
-              </MDBRow>
-            </MDBCardBody>
-          </MDBCard>
-        </MDBCol>
-      </MDBRow>
-      
-  
-    </MDBContainer>
-    
+                    </a>
+                </div>
+            </MDBCol>
+        </MDBRow>
+    </MDBCardBody>
+                </MDBCard>
+              </MDBCol>
+            );
+          })}
+        </MDBRow>
+      )}
+   
+
+    </div>
   );
 }
+
 
 export default Proizvod;

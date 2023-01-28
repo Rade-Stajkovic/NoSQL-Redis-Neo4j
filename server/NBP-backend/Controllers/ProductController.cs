@@ -7,6 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using NBP_backend.Models;
 using NBP_backend.Services;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+
 namespace NBP_backend.Controllers
 {
     [ApiController]
@@ -28,9 +31,20 @@ namespace NBP_backend.Controllers
             return Ok(_productServices.GetAll());
         }
 
+ 
+        [HttpGet]
+        [Route("GetProduct/{ID}")]
+        public async Task<IActionResult> GetProduct(int ID)
+        {
+            var product = await _productServices.GetProduct(ID);
+            return Ok(product);
+        }
+
 
         [HttpGet]
         [Route("SearchProducts/{search}")]
+
+
 
         public async Task<IActionResult> Search(String search)
         {

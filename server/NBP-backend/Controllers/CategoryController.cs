@@ -19,6 +19,16 @@ namespace NBP_backend.Controllers
            
         }
 
+
+        [HttpGet]
+        [Route("GetAllCategories")]
+
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(_categoryServices.GetAll());
+        }
+
+
         [HttpPost]
         [Route("CreateCategory/{name}")]
         public IActionResult Create(String name)
@@ -37,7 +47,7 @@ namespace NBP_backend.Controllers
                 bool res1 = res.Result;
                 if (res1)
                 {
-                    return Ok("Uspesno ste dodali kategoriju proizvodu");
+                    return Ok("Uspesno ste dodali proizvod kategoriji");
                 }
                 return BadRequest("Nista");
             }
@@ -81,5 +91,9 @@ namespace NBP_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+
+
+    
     }
 }

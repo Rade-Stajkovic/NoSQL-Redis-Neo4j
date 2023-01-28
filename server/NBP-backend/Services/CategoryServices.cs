@@ -24,6 +24,22 @@ namespace NBP_backend.Services
             this.cacheProvider = cacheProvider;
         }
 
+        public List<Category> GetAll()
+        {
+            List<Category> categories = new List<Category>();
+
+            var res = _client.Cypher.Match("(n:Category)")
+                                     //.With("n{.*, tempID:id(n) as u")
+                                     .With("n{.Name, tempID:id(n)} as u")
+                                     .Return(u => u.As<Category>()).ResultsAsync.Result;
+            var us = res.ToList();
+            foreach (var x in res)
+            {
+                categories.Add(x);
+            }
+            return categories;
+        }
+
         public async void CreateCategory(String name)
         {
             Category category = new Category();
@@ -83,7 +99,7 @@ namespace NBP_backend.Services
         {
             string idCat = IDCat.ToString();
             var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category"+idCat);
-            if(prodRedis.Count == 0)
+            if (prodRedis.Count == 0)
             {
                 var prod = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
                                  .Where("id(c) = $ID ")
@@ -96,21 +112,16 @@ namespace NBP_backend.Services
                 foreach (var product in prod2)
                 {
                     products.Add(product);
-                    cacheProvider.SetInHashSet("category"+idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
+                    cacheProvider.SetInHashSet("category" + idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
                 }
 
-               
+
                 return products;
             }
             else
             {
                 return prodRedis;
             }
-          
-          
-
-           
-
             
         }
     }

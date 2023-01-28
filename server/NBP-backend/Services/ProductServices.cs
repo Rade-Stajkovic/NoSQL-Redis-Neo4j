@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
+using System.Text.RegularExpressions;
+
 namespace NBP_backend.Services
 {
     public class ProductServices
@@ -31,6 +33,21 @@ namespace NBP_backend.Services
             }
             return products;
         }
+      
+        public async Task<Product> GetProduct(int ID)
+        {
+            var results = await _client.Cypher
+                .Match("(n:Product)")
+                .Where("id(n)=$id")
+                .WithParam("id", ID)
+                .With("n{.*, ID:id(n)} AS u")
+                .Return(u => u.As<Product>())
+                .ResultsAsync;
+
+            return results.FirstOrDefault();
+        }
+
+
 
         public List<Product> SearchProducts(String search)
         {

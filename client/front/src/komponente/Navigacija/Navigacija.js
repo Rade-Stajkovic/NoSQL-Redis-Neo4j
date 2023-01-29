@@ -4,6 +4,8 @@ import Logovanje from '../Logovanje/Logovanje';
 import Proizvod from '../Proizvod/Proizvod';
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Notifikacije from '../Notifikacije/Notifikacije';
+import './Navigacija.css'
 
 
 import {
@@ -21,26 +23,41 @@ import {
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBCollapse,
-  MDBBadge
+  MDBBadge,
+  MDBPopover,
+  MDBPopoverBody,
+  MDBPopoverHeader,
+ 
 } from 'mdb-react-ui-kit';
 
-const Navigacija = (props) => {
-  const [login, setlogin] = useState("");
+const Navigacija = (props) =>
+{
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const[login, setlogin]= useState("");
+  const[notifications, setNotifications]= useState(false);
   const [categories, setCategories] = useState();
-  useEffect(() => {
-    axios.get("https://localhost:44332/GetAllCategories")
-      .then(res => {
-        console.log(res)
-        setCategories(res.data)
-      })
-
-      .catch(err => {
-        console.log(err)
-      })
-  }, [])
-
+  const test = JSON.parse(localStorage.getItem('user-info'))
+  useEffect(()=>{
+    axios.get("https://localhost:4433/GetAllCategories")
+    .then(res => {
+      console.log(res)
+      setCategories(res.data)
+    })
+    
+    .catch(err => {
+      console.log(err)
+    })
+  },[])
+  
   console.log(categories)
-
+  function notificationsShow()
+  {
+    setNotifications(true);
+  }
+  function notificationsHide()
+  {
+    setNotifications(false);
+  }
 
 
 
@@ -107,30 +124,42 @@ const Navigacija = (props) => {
 
           </MDBNavbarNav>
 
-
-          <MDBNavbarItem >
-            <MDBNavbarLink href='#'>
-              <MDBIcon fas icon='shopping-cart' />
-            </MDBNavbarLink>
-          </MDBNavbarItem>
-
+          
+          
+          
 
           <form className='d-flex input-group w-auto'>
             <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' />
             <MDBBtn color='primary'><MDBIcon fas icon="search" /></MDBBtn>
           </form>
 
-          {/* <MDBNavbarItem >
-          <MDBNavbarLink href="/logovanje" color='primary'>Prijava</MDBNavbarLink>
-          </MDBNavbarItem> */}
+          <div>   
+      {setNotifications && <Notifikacije onClose={() => setNotifications(false)}  />}
+    </div>
 
           <MDBNavbarItem>
-            <MDBNavbarLink onClick={loginshow} eventkey={2} >Prijavi se</MDBNavbarLink>
+            <MDBNavbarLink onClick={loginshow} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Prijavi se</MDBNavbarLink>
           </MDBNavbarItem>
 
 
           <Logovanje show={login} onHide={loginhide}></Logovanje>
+          
+          {/* <MDBNavbarItem> <MDBNavbarLink onClick={notificationsShow} eventkey={2}>Notifikacije </MDBNavbarLink></MDBNavbarItem>
+          <Notifikacije show={notifications} onHide={notificationsHide}></Notifikacije> */}
+          
 
+          {/* <MDBPopover color='secondary' btnChildren='Popover on bottom' placement='bottom' onClick={notificationsShow}></MDBPopover>
+          <Notifikacije show={notifications} onHide={notificationsHide}></Notifikacije> */}
+
+
+
+
+
+
+
+
+
+         
 
         </MDBCollapse>
       </MDBContainer>

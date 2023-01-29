@@ -77,13 +77,13 @@ async function register()
             let password=formValue.password;
             let Name = formValue.fname;
             let SurName=formValue.lname;
-            let result = await fetch('https://localhost:44332/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName, {
+            let result = await fetch('https://localhost:4433/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName, {
               method: 'POST'
             })
             .then(response => {
               console.log(response);
               if (response.ok) {
-                alert("Uspeno ste se registrovali, sada mozete dase ulogujete i koristite aplikaciju!");
+                alert("Uspeno ste se registrovali, sada mozete da se ulogujete i koristite aplikaciju!");
               } else {
                 throw new Error('Something went wrong');
               }

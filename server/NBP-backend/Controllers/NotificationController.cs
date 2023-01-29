@@ -28,5 +28,13 @@ namespace NBP_backend.Controllers
         {
             return Ok(_notificationServices.GetNotificationForUser(idUser));
         }
+
+        /*[HttpPost]
+        [Route("CreateNotification/notification/{IDProduct}")]
+        public async Task<IActionResult> CreateNotification([FromBody] Notification notification, int IDProduct)
+        {
+            _notificationServices.CreateNotification(notification, IDProduct);
+            return Ok("Uspelo");
+        }*/
     }
 }

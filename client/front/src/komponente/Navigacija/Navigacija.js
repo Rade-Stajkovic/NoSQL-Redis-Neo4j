@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Logovanje from '../Logovanje/Logovanje';
 import Proizvod from '../Proizvod/Proizvod';
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 
@@ -24,38 +24,35 @@ import {
   MDBBadge
 } from 'mdb-react-ui-kit';
 
-const Navigacija = (props) =>
-{
-  const[login, setlogin]= useState("");
+const Navigacija = (props) => {
+  const [login, setlogin] = useState("");
   const [categories, setCategories] = useState();
-  useEffect(()=>{
+  useEffect(() => {
     axios.get("https://localhost:44332/GetAllCategories")
-    .then(res => {
-      console.log(res)
-      setCategories(res.data)
-    })
-    
-    .catch(err => {
-      console.log(err)
-    })
-  },[])
-  
+      .then(res => {
+        console.log(res)
+        setCategories(res.data)
+      })
+
+      .catch(err => {
+        console.log(err)
+      })
+  }, [])
+
   console.log(categories)
 
 
 
 
-  function loginshow()
-  {
+  function loginshow() {
     setlogin(true);
   }
-  function loginhide()
-  {
+  function loginhide() {
     setlogin(false);
   }
-  
+
   return (
-    
+
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer fluid>
         <MDBNavbarBrand href='#'>Brand</MDBNavbarBrand>
@@ -64,8 +61,8 @@ const Navigacija = (props) =>
           aria-controls='navbarSupportedContent'
           aria-expanded='false'
           aria-label='Toggle navigation'
-          
-          
+
+
         >
           <MDBIcon icon='bars' fas />
         </MDBNavbarToggler>
@@ -77,20 +74,20 @@ const Navigacija = (props) =>
                 Početna
               </MDBNavbarLink>
             </MDBNavbarItem>
-            
-            
+
+
             <MDBNavbarItem>
               <MDBDropdown>
                 <MDBDropdownToggle tag='a' className='nav-link' role='button'>
-                 Kategorije
+                  Kategorije
                 </MDBDropdownToggle>
                 <MDBDropdownMenu>
-      {categories ? categories.map(category => (
-        <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{color: '#393f81'}}>
-        {category.name}
-      </a></MDBDropdownItem>
-      )) : <p>Loading...</p>}
-    </MDBDropdownMenu>
+                  {categories ? categories.map(category => (
+                    <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
+                      {category.name}
+                    </a></MDBDropdownItem>
+                  )) : <p>Loading...</p>}
+                </MDBDropdownMenu>
               </MDBDropdown>
             </MDBNavbarItem>
 
@@ -107,16 +104,16 @@ const Navigacija = (props) =>
               </MDBDropdown>
             </MDBNavbarItem>
 
-            
+
           </MDBNavbarNav>
 
-          
+
           <MDBNavbarItem >
             <MDBNavbarLink href='#'>
               <MDBIcon fas icon='shopping-cart' />
             </MDBNavbarLink>
           </MDBNavbarItem>
-          
+
 
           <form className='d-flex input-group w-auto'>
             <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' />
@@ -130,10 +127,10 @@ const Navigacija = (props) =>
           <MDBNavbarItem>
             <MDBNavbarLink onClick={loginshow} eventkey={2} >Prijavi se</MDBNavbarLink>
           </MDBNavbarItem>
-        
+
 
           <Logovanje show={login} onHide={loginhide}></Logovanje>
-          
+
 
         </MDBCollapse>
       </MDBContainer>

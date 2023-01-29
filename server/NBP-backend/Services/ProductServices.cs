@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
-<<<<<<< HEAD
+
 using System.Text.RegularExpressions;
-=======
+
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Xml.Linq;
->>>>>>> a323e7204c37e88ea888d4797c2d59124f880e9a
+
 
 namespace NBP_backend.Services
 {
@@ -26,20 +26,25 @@ namespace NBP_backend.Services
             _client = client;
         }
 
+   
         public List<Product> GetAll()
         {
             List<Product> products = new List<Product>();
-           
-            var res = _client.Cypher.Match("(n:Product)")
-                                     .Return(n => n.As<Product>()).ResultsAsync.Result;
+
+            var res = _client.Cypher
+                .Match("(n:Product)")
+                .With("n{.*, ID:id(n)} AS u")
+                .Return(u => u.As<Product>())
+                .ResultsAsync.Result;
             var us = res.ToList();
             foreach (var x in res)
             {
                 products.Add(x);
             }
             return products;
+
+           
         }
-      
         public async Task<Product> GetProduct(int ID)
         {
             var results = await _client.Cypher
@@ -96,15 +101,15 @@ namespace NBP_backend.Services
 
         }
 
-        public async Task<List<Stored>> GetMoreDetails(int IdProduct)
+        public List<Stored> GetMoreDetails(int IdProduct)
         {
-            var res = await _client.Cypher.Match("(n:Product) - [v:STORED_IN]-(c:Market)")
+            var res = _client.Cypher.Match("(n:Product) - [v:STORED_IN]-(c:Market)")
                         .Where("id(n) = " + IdProduct)
                         .With("n{.*, Market:c.Name, Price:v.price, Sale:v.sale, Available:v.available} as n")
                         .Return(n => n.As<Stored>()).ResultsAsync;
-            var us = res.ToList();
+            var us = res.Result;
             List<Stored> ret = new List<Stored>();
-            foreach(var x in us )
+            foreach (var x in us)
             {
                 ret.Add(x);
             }

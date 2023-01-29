@@ -25,7 +25,7 @@ function Rute ()
             <Route path='/registracija' element={<Registracija/>} />
             <Route path='/kategorija/:name/:IDCat' element={<Proizvod/>} />
             <Route path='/' element={<Pocetna/>} />
-            <Route path='/proizvod/:ID' element={< SamoProizvod />} />
+            <Route path='/proizvod/:IdProduct' element={< SamoProizvod />} />
         </Routes>
         </BrowserRouter>
         </div>

@@ -22,7 +22,7 @@ const [product, setProduct] = useState();
 let { ID } = useParams();
 
 useEffect(() => {
-   axios.get(`https://localhost:44332/Product/GetProduct/${ID}`)
+   axios.get(`https://localhost:4433/Product/GetProduct/${ID}`)
     .then(res => {
       setProduct(res.data);
     })

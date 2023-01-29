@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   MDBContainer,
@@ -18,9 +18,6 @@ import {
 import { Link } from "react-router-dom";
 
 
-
-
-import { useState,useEffect } from "react";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 
@@ -30,7 +27,7 @@ function Proizvod() {
  
 
   useEffect(() => {
-    axios.put(`https://localhost:44332/GetAllProducts/${IDCat}`)
+    axios.put(`https://localhost:4433/GetAllProducts/${IDCat}`)
       .then(res => {
         setProducts(res.data);
       })

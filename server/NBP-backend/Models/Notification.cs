@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 
 namespace NBP_backend.Models
 {
-    public class Stored
+    public class Notification
     {
+        public int ProductID { get; set; }
+
         public string Market { get; set; }
 
-        public double Price { get; set; }
+        public DateTime Time { get; set; }
 
-        public bool Sale { get; set; }
+        public string Text  { get; set; }
 
-        public bool Available { get; set; }
 
     }
 }

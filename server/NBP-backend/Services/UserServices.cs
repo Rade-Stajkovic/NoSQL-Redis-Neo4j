@@ -10,6 +10,9 @@ using Neo4jClient.Cypher;
 using Neo4j.Driver;
 using NBP_backend.Cache;
 using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
+using System.Text.Json;
+using Microsoft.AspNetCore.SignalR;
 
 namespace NBP_backend.Services
 
@@ -17,12 +20,17 @@ namespace NBP_backend.Services
     public class UserServices
     {
         private readonly IGraphClient _client;
-
+        private ConnectionMultiplexer redisPubSub;
+        private ISubscriber sub;
+        private IHubContext<ProductHub> _hub;
         private ICacheProvider cacheProvider { get; set; }
-        public UserServices(IGraphClient client, ICacheProvider cacheProvider)
+        public UserServices(IGraphClient client, ICacheProvider cacheProvider, IHubContext<ProductHub> hub)
         {
             _client = client;
             this.cacheProvider = cacheProvider;
+            this.redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379");
+            this.sub = redisPubSub.GetSubscriber();
+            _hub = hub;
         }
         /*Pregledani*/
         public  List<User> GetAll()
@@ -72,11 +80,14 @@ namespace NBP_backend.Services
         {
             try
             {
-                var redis = await cacheProvider.GetAsync<User>(username);
-                if (redis != null)
-                {
-                    return redis.returnID;
-                }
+                
+
+
+                //var redis = await cacheProvider.GetAsync<User>(username);
+                //if (redis != null)
+                //{
+                //    return redis.returnID;
+                //}
 
                 var userr = await _client.Cypher.Match("(d:User)")
                                                 .Where((User d) => d.UserName == username)
@@ -89,6 +100,28 @@ namespace NBP_backend.Services
                     if (sr.Password == password)
                     {
                         await cacheProvider.SetAsync(username, sr, new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24) });
+                        
+                        
+
+                        
+                        var rez3 = _client.Cypher.Match("(n:User)-[:FOLLOWING]->(p:Product)")
+                                   .Where("id(n) ="+sr.returnID)
+                                   .With("p{.*, ID:id(p)} as p")
+                                   .Return(p => p.As<Product>()).ResultsAsync.Result;
+
+                        var listOfProducts = rez3.ToList();
+                        foreach (var product in listOfProducts)
+                        {
+                            sub.Subscribe(product.ID.ToString(), (chanel, message) =>
+                            {
+                                   
+                               
+                                //cacheProvider.SetInHashSet($"proba2{product.ID}", product.ID.ToString(), message);
+                                _hub.Clients.All.SendAsync("ProductNotification",message.ToString());
+
+                            });
+                                    
+                        }
                         return sr.returnID;
                     }
                     else
@@ -260,6 +293,32 @@ namespace NBP_backend.Services
                 products.Add(product);
             }
 
+            return products;
+        }
+
+        public List<Product> GetRecommendedSecond(int IDUser)
+        {
+            List<Product> products = new List<Product>();
+            var rez = _client.Cypher.Match("(u:User)-[f:FOLLOWING]->(p:Product)-[:PUB_NOTIFICATION]->(n:Notification)")
+                                  .Where("id(u) = $ID ")
+                                  .With("p{.*, ID:id(p)} as p")
+                                  .WithParam("ID", IDUser)
+                                  .ReturnDistinct(p => p.As<Product>()).ResultsAsync.Result;
+
+            products = rez.ToList();
+            return products;
+        }
+
+        public List<Product> GetRecommendedByUsers()
+        {
+            List<Product> products = new List<Product>();
+            var rez = _client.Cypher.Match("(p:Product)")
+                                  .Where("p.Reviews > 7 AND p.Reviews / p.GoodReviews < 2")
+                                  .With("p{.*, ID:id(p)} as p")
+                                  
+                                  .ReturnDistinct(p => p.As<Product>()).Limit(10).ResultsAsync.Result;
+
+            products = rez.ToList();
             return products;
         }
     }

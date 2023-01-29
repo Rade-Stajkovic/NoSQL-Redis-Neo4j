@@ -14,6 +14,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using NBP_backend.Services;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.AspNetCore.SignalR;
+
 using NBP_backend.Cache;
 
 namespace NBP_backend
@@ -43,6 +45,11 @@ namespace NBP_backend
             services.AddSingleton<CategoryServices>();
             services.AddSingleton<ManufacturerServices>();
             services.AddSingleton<ReviewServices>();
+            services.AddSingleton<NotificationServices>();
+            services.AddSingleton<OrderProductServices>();
+            services.AddSingleton<DeliveryServices>();
+
+
             var client = new BoltGraphClient(new Uri("neo4j+s://ea17674b.databases.neo4j.io"), "neo4j", "PbWMDupdf6n1LrZRBjibXkoJZ05YffMXokUZTFwyRrk");
             client.ConnectAsync();
             services.AddSingleton<IGraphClient>(client);
@@ -51,6 +58,7 @@ namespace NBP_backend
             services.AddStackExchangeRedisCache(options => {
                 options.Configuration = Configuration.GetConnectionString("Redis");
             });
+            services.AddSignalR();
 
             //
             services.AddCors(options =>
@@ -88,7 +96,9 @@ namespace NBP_backend
 
                     })
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                    
                 });
 
             });
@@ -115,7 +125,10 @@ namespace NBP_backend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ProductHub>("/producthub");
+
             });
+         
         }
     }
 }

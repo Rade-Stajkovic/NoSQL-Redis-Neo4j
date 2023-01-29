@@ -6,7 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
+<<<<<<< HEAD
 using System.Text.RegularExpressions;
+=======
+using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Xml.Linq;
+>>>>>>> a323e7204c37e88ea888d4797c2d59124f880e9a
 
 namespace NBP_backend.Services
 {
@@ -88,6 +94,21 @@ namespace NBP_backend.Services
                                 .Delete("p")
                                 .ExecuteWithoutResultsAsync();
 
+        }
+
+        public async Task<List<Stored>> GetMoreDetails(int IdProduct)
+        {
+            var res = await _client.Cypher.Match("(n:Product) - [v:STORED_IN]-(c:Market)")
+                        .Where("id(n) = " + IdProduct)
+                        .With("n{.*, Market:c.Name, Price:v.price, Sale:v.sale, Available:v.available} as n")
+                        .Return(n => n.As<Stored>()).ResultsAsync;
+            var us = res.ToList();
+            List<Stored> ret = new List<Stored>();
+            foreach(var x in us )
+            {
+                ret.Add(x);
+            }
+            return ret;
         }
 
 

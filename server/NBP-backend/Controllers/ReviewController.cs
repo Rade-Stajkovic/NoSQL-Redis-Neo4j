@@ -17,10 +17,10 @@ namespace NBP_backend.Controllers
         }
 
         [HttpPost]
-        [Route("ReviewPoduct/{text}/{username}/{idProduct}")]
-        public async Task<IActionResult> Create(String text, String username, int idProduct)
+        [Route("ReviewPoduct/{text}/{username}/{idProduct}/{recommend}")]
+        public async Task<IActionResult> Create(String text, String username, int idProduct,bool recommend)
         {
-            _reviewServices.ReviewPoduct(text, username, idProduct);
+            _reviewServices.ReviewPoduct(text, username, idProduct, recommend);
             return Ok("Uspelo");
         }
 

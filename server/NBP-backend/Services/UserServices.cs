@@ -62,13 +62,13 @@ namespace NBP_backend.Services
                       .ExecuteWithoutResultsAsync();
         }
 
-        public async void CreateUser(String username, String password, String Name, String SurName)
+        public async void CreateUser(String username, String password, String Name, String Surname)
         {
             User user = new User();
             user.UserName = username;
             user.Password = password;
             user.Name = Name;
-            user.Surname = SurName;
+            user.Surname = Surname;
             await _client.Cypher
                       .Create("(n:User $dept)")
                       .WithParam("dept", user)

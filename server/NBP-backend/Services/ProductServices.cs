@@ -135,7 +135,7 @@ namespace NBP_backend.Services
         {
             var res = await _client.Cypher.Match("(n:Product) - [v:STORED_IN]-(c:Market)")
                         .Where("id(n) = " + IdProduct)
-                        .With("n{.*, Market:c.Name, Price:v.price, Sale:v.sale, Available:v.available} as n")
+                        .With("n{.*,  Market:c.Name, Price:v.price, Sale:v.sale, Available:v.available} as n")
                         .Return(n => n.As<Stored>()).ResultsAsync;
             var us = res.ToList();
             List<Stored> ret = new List<Stored>();

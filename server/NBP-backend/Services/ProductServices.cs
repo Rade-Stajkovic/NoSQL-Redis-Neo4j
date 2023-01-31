@@ -6,19 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
-<<<<<<< HEAD
+
 
 using System.Text.RegularExpressions;
 
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Xml.Linq;
-
-=======
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Xml.Linq;
->>>>>>> 3dbe93b73edf9bbc2554bbcb02fa218c7ab5c2ef
+
 
 namespace NBP_backend.Services
 {

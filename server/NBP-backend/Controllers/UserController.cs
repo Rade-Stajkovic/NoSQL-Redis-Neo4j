@@ -38,9 +38,9 @@ namespace NBP_backend.Controllers
     
         [HttpPost]
         [Route("CreateUser/{username}/{password}/{Name}/{SurName}")]
-        public async Task<IActionResult> Create(String username, String password, String Name, String SurName)
+        public async Task<IActionResult> Create(String username, String password, String Name, String SurName, String PhoneNumber, String Location)
         {
-            _userServices.CreateUser(username, password, Name, SurName);
+            _userServices.CreateUser(username, password, Name, SurName, PhoneNumber, Location );
             return Ok("Uspelo");
         }
 
@@ -50,13 +50,13 @@ namespace NBP_backend.Controllers
         {
             try
             {
-                Task<int> res = _userServices.LogInUser(username, password);
-                int res1 = res.Result;
-                if (res1 == -1)
+                Task<User> res = _userServices.LogInUser(username, password);
+                User res1 = res.Result;
+                if (res1 == null)
                 {
-                    return BadRequest("Pogresna sifra");
+                    return BadRequest("Korisnik ne postoji ili ste pogresli parametre za prijavu");
                 }
-                else if(res1==-2) return BadRequest("Korisnik ne postoji");
+               
                 return Ok(res1);
             }
             catch(Exception e)

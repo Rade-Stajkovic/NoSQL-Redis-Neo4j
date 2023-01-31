@@ -113,11 +113,9 @@ function SamoProizvod() {
                   </div>
                   <div className="d-flex flex-column mt-4">
                     <MDBBtn color="primary" size="sm">
-                      Zaprati
+                      Zaprati Proizvod
                     </MDBBtn>
-                    <MDBBtn outline color="primary" size="sm" className="mt-2">
-                      Dodaj u listu
-                    </MDBBtn>
+                  
 
                   </div>
                 </MDBCol>

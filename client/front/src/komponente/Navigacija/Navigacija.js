@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Logovanje from '../Logovanje/Logovanje';
-import Proizvod from '../Proizvod/Proizvod';
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Notifikacije from '../Notifikacije/Notifikacije';
@@ -38,7 +38,7 @@ const Navigacija = (props) =>
   const [categories, setCategories] = useState();
   const test = JSON.parse(localStorage.getItem('user-info'))
   useEffect(()=>{
-    axios.get("https://localhost:4433/GetAllCategories")
+    axios.get("https://localhost:44332/GetAllCategories")
     .then(res => {
       console.log(res)
       setCategories(res.data)

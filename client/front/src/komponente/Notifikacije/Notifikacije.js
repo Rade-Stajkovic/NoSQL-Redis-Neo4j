@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import { MDBListGroup, MDBListGroupItem } from 'mdb-react-ui-kit';
 import {
@@ -17,7 +19,7 @@ function Notifikacije(props){
     return (
         
             <MDBPopover color='light' btnChildren={<><a  class=" mx-3">
-            <i class="fas fa-envelope fa-2x"></i>
+            <i className="fas fa-envelope fa-2x"></i>
             
           </a> </>}> 
                     <MDBPopoverHeader color='light' >Notifikacije</MDBPopoverHeader>

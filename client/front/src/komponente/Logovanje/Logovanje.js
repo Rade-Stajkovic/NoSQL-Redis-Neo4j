@@ -47,7 +47,7 @@ function Logovanje(props)
         console.log(username, password);
         let item = {username, password};
         var heders = {};
-        let result = await fetch("https://localhost:4433/User/LogIn/"+username+"/"+password,
+        let result = await fetch("https://localhost:5001/User/LogIn/"+username+"/"+password,
         {method: 'GET',
         headers: {
 
@@ -58,15 +58,18 @@ function Logovanje(props)
           console.log(response);
           if(response.ok) {
             //props.setLogin=true;
+            console.log(response);
+          
+
            
         }
           else {
             alert('Korisnik sa ovim podacima nije registovan!');
           }
         });
-        console.log(result);
+        
         //localStorage.setItem("user-info",JSON.stringify(data));
-
+      
 
         let userData = {
           username: username,
@@ -80,7 +83,7 @@ function Logovanje(props)
         
 
 
-        window.location.href='/';
+        //window.location.href='/';
     }
   
 

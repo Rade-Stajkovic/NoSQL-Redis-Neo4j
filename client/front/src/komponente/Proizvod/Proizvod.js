@@ -27,7 +27,7 @@ function Proizvod() {
  
 
   useEffect(() => {
-    axios.put(`https://localhost:4433/GetAllProducts/${IDCat}`)
+    axios.put(`https://localhost:44332/GetAllProducts/${IDCat}`)
       .then(res => {
         setProducts(res.data);
       })

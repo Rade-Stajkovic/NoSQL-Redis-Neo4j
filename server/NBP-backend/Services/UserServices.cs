@@ -75,20 +75,10 @@ namespace NBP_backend.Services
                       .ExecuteWithoutResultsAsync();
            
         }
-
         public async Task<int> LogInUser(String username, String password)
         {
             try
             {
-                
-
-
-                //var redis = await cacheProvider.GetAsync<User>(username);
-                //if (redis != null)
-                //{
-                //    return redis.returnID;
-                //}
-
                 var userr = await _client.Cypher.Match("(d:User)")
                                                 .Where((User d) => d.UserName == username)
                                                 .With("d{.*, returnID:id(d)} as u")
@@ -144,12 +134,7 @@ namespace NBP_backend.Services
             dict.Add("ID", IDUser);
             dict.Add("ID2", IDProduct);
             try
-            {
-                //var rel = await _client.Cypher.Match("(d:User)-[v:FOLLOWING]-(c:Product)")
-                //                  .Where("id(d) = $ID AND id(c) = $ID2")
-                //                  .WithParams(dict)
-                               
-
+            { 
                 await _client.Cypher.Match("(d:User), (c:Product)")
                                     .Where("id(d) = $ID AND id(c) = $ID2")
                                     .WithParams(dict)

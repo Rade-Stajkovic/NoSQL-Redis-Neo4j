@@ -9,6 +9,7 @@ using NBP_backend.Models;
 using NBP_backend.Services;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using NBP_backend.Services.Fajlovi;
 
 namespace NBP_backend.Controllers
 {
@@ -53,16 +54,16 @@ namespace NBP_backend.Controllers
 
         [HttpPost]
         [Route("CreateProduct/{name}")]
-        public async Task<IActionResult> Create(String name)
+        public async Task<IActionResult> Create(String name, [FromForm] FileUpload file)
         {
-            _productServices.CreateProduct(name);
+            _productServices.CreateProduct(name, file);
             return Ok("Uspelo");
         }
 
         [HttpDelete]
         [Route("DeleteProduct/{id}")]
 
-        public async Task<IActionResult> Delete(String id)
+        public async Task<IActionResult> Delete(int id)
         {
            _productServices.DeleteProduct(id);
             return Ok("Uspesno obrisan");
@@ -73,7 +74,7 @@ namespace NBP_backend.Controllers
 
         public async Task<IActionResult> GetMoreDetails(int IdProduct)
         {
-            return new JsonResult(_productServices.GetMoreDetails(IdProduct));
+            return new JsonResult(await _productServices.GetMoreDetails(IdProduct));
         }
     }
 }

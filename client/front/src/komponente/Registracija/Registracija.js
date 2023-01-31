@@ -82,7 +82,10 @@ async function register()
             let password=formValue.password;
             let Name = formValue.fname;
             let SurName=formValue.lname;
-            let result = await fetch('https://localhost:5001/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName, {
+            let PhoneNumber=formValue.number;
+            let Location=formValue.location;
+
+            let result = await fetch('https://localhost:44332/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName+ '/' + PhoneNumber + '/' + Location, {
               method: 'POST'
             })
             .then(response => {
@@ -149,7 +152,7 @@ async function register()
               <div className="d-flex flex-row align-items-center mb-4">
               <MDBValidationItem feedback="Unesite broj telefona" invalid >
               <MDBInput
-                  value={formValue.username}
+                  value={formValue.number}
                   name='number'
                   onChange={onChange}
                   className='form-control'
@@ -198,7 +201,7 @@ async function register()
             <div className="d-flex flex-row align-items-center mb-4">
             <MDBValidationItem feedback="Unesite adresu" invalid >
             <MDBInput
-                value={formValue.username}
+                value={formValue.location}
                 name='location'
                 onChange={onChange}
                 className='form-control'

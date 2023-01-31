@@ -82,6 +82,7 @@ namespace NBP_backend.Controllers
         public IActionResult GetAll(int IDCat)
         {
             try
+
             {
                 List<Product> prod = _categoryServices.GetAllProduct(IDCat);
                 return Ok(prod);

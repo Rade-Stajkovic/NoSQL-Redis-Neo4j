@@ -1,5 +1,4 @@
 import React from "react";
-
 import { useState, useEffect } from "react";
 
 import {
@@ -15,13 +14,13 @@ import {
   MDBRipple,
   MDBBtn,
 } from "mdb-react-ui-kit";
-import { Link } from "react-router-dom";
+
 
 
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 
-function Proizvod() {
+function Kategorija() {
   const { IDCat } = useParams();
   const [products, setProducts] = useState([]);
  
@@ -80,4 +79,4 @@ function Proizvod() {
 }
 
 
-export default Proizvod;
+export default Kategorija;

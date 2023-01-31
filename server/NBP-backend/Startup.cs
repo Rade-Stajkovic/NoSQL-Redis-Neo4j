@@ -121,6 +121,7 @@ namespace NBP_backend
             app.UseCors("CORS");
 
             app.UseAuthorization();
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {

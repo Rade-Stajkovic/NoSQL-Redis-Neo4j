@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter } from 'react-router-dom';
+
 import {
   MDBContainer,
   MDBRow,
@@ -11,33 +11,71 @@ import {
   MDBRipple,
   MDBBtn,
 } from "mdb-react-ui-kit";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 
 
 function SamoProizvod() {
-const [product, setProduct] = useState();
-let { ID } = useParams();
+  const [product, setProduct] = useState();
+  let { IDUser } = useParams();
+  let { IdProduct } = useParams();
+  const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-   axios.get(`https://localhost:44332/Product/GetProduct/${ID}`)
-    .then(res => {
-      setProduct(res.data);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-}, [ID]);
+  // follow = () => {
+ 
+  // ///ovde ce samo da zaprati
+  //   useEffect(() => {
+  //     axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IDProduct}`)
+  //       .then(res => {
+  //         this.setState({ following: true });
+  //       })
+  //       .catch(err => {
+  //         console.log(err);
+  //       });
+  //   },);
+  // };
 
-console.log(ID);
-if (!product) {
-  return <div>Loading...</div>
-}
+  // unfollow = () => {
+  //   useEffect(() => {
+  //     axios.put(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IDProduct}`)
+  //       .then(res => {
+  //         this.setState({ following: false });
+  //       })
+  //       .catch(err => {
+  //         console.log(err);
+  //       });
+  //   },);
+  // };
+
+
+
+
+
+  useEffect(() => {
+    axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
+      .then(res => {
+        if (res.data && res.data.length > 0) {
+          setProduct(res.data);
+          setLoading(false);
+          console.log(res.data)
+        }
+        else {
+          console.error("nema podataka za proizvod", IdProduct)
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [IdProduct]);
+
+  console.log(product)
+  if (loading) return <p>Loading...</p>;
 
   return (
-                <MDBContainer  fluid>
+
+    <MDBContainer fluid>
       <MDBRow className="justify-content-center mb-0">
         <MDBCol md="12" xl="10">
           <MDBCard className="shadow-0 border rounded-3 mt-5 mb-3">
@@ -65,66 +103,66 @@ if (!product) {
                 <MDBCol md="6">
                   <h5>{product.name}</h5>
                   <div className="d-flex flex-row">
-                    <div className="text-danger mb-1 me-2">
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                      <MDBIcon fas icon="star" />
-                    </div>
-                    <span>5</span>
+
                   </div>
                   <div className="mt-1 mb-0 text-muted small">
                     <span>Sifra Proizvoda</span>
                     <span className="text-primary"> • </span>
                     <span>481545555444</span>
                     <span className="text-primary">  </span>
-             
+
                   </div>
                   <div className="mb-2 text-muted small">
                     <span>Kategorija</span>
                     <span className="text-primary"> • </span>
-                    <span>voce</span>
+                    <span>{product.category}</span>
                     <span className="text-primary"> • </span>
                     <span>
                       povrce
                       <br />
                     </span>
                   </div>
-             
+
                 </MDBCol>
-                <MDBCol
-                  md="6"
-                  lg="3"
-                  className="border-sm-start-none border-start"
-                >
-                  <div className="d-flex flex-row align-items-center mb-1">
-                    <h4 className="mb-1 me-1">IDEA</h4>
-                    <h4 className="mb-1 me-1">139.9 din</h4>
-                    <span className="text-danger">
-                      <s>200.99</s>
-                    </span>
+
+
+                <MDBCol md="6" lg="3" className="border-sm-start-none border-start">
+                  <div>
+                    {product.map(market => (
+                      <div key={market.id} className="d-flex flex-column align-items-start mb-1">
+                        <div className="d-flex flex-row align-items-center">
+                          <h4 className="mb-1 me-1">{market.market}-</h4>
+                          <h4 className="mb-1 me-1 ml-auto">{market.price} din</h4>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <MDBBtn color="primary" size="sm" > NARUCI</MDBBtn></div>
+                        </div>
+
+                      </div>
+                    ))}
                   </div>
-                
-                  <div className="d-flex flex-column mt-4">
-                    <MDBBtn color="primary" size="sm">
-                      Zaprati
-                    </MDBBtn>
-                    <MDBBtn outline color="primary" size="sm" className="mt-2">
-                      Dodaj u listu
-                    </MDBBtn>
-                
-                  </div>
+                  {/* <div className="d-flex flex-column mt-4">
+                    {this.state.following ? (
+                      <MDBBtn color="danger" size="sm" onClick={() => this.unfollow()}>
+                        Prestani da pratiš
+                      </MDBBtn>
+                    ) : (
+                      <MDBBtn color="primary" size="sm" onClick={() => this.follow()}>
+                        Zaprati Proizvod
+                      </MDBBtn>
+                    )}
+                  </div> */}
                 </MDBCol>
+
               </MDBRow>
             </MDBCardBody>
           </MDBCard>
         </MDBCol>
+
       </MDBRow>
-      
-  
+
+
     </MDBContainer>
- )
+  )
 }
 
 

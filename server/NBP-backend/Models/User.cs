@@ -21,6 +21,10 @@ namespace NBP_backend.Models
             get; set;
         } 
 
+        public string Location { get; set; }
+
+        public string PhoneNumber { get; set; }
+
         public List<Product> Follow { get; set; }
 
         public  List<Product> Searched { get; set; }

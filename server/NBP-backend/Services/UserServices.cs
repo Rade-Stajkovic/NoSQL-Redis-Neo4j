@@ -62,20 +62,22 @@ namespace NBP_backend.Services
                       .ExecuteWithoutResultsAsync();
         }
 
-        public async void CreateUser(String username, String password, String Name, String Surname)
+        public async void CreateUser(String username, String password, String Name, String Surname, String PhoneNumber, String Location)
         {
             User user = new User();
             user.UserName = username;
             user.Password = password;
             user.Name = Name;
             user.Surname = Surname;
+            user.PhoneNumber = PhoneNumber;
+            user.Location = Location;
             await _client.Cypher
                       .Create("(n:User $dept)")
                       .WithParam("dept", user)
                       .ExecuteWithoutResultsAsync();
            
         }
-        public async Task<int> LogInUser(String username, String password)
+        public async Task<User> LogInUser(String username, String password)
         {
             try
             {
@@ -112,19 +114,19 @@ namespace NBP_backend.Services
                             });
                                     
                         }
-                        return sr.returnID;
+                        return sr;
                     }
                     else
                     {
-                        return -1;
+                        return null;
                     }
                 }
-                return -2;
+                return null;
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return -5;
+                return null;
             }
         }
 

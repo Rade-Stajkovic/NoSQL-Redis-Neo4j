@@ -7,8 +7,13 @@ import { Spinner, Container } from 'react-bootstrap';
 import { Switch } from 'react-router-dom';
 import Registracija from './komponente/Registracija/Registracija';
 import Proizvod from './komponente/Proizvod/Proizvod';
+<<<<<<< HEAD
+import Pocetna from './Pocetna';
+
+=======
 import Pocetna from './Pocetna'
 import SamoProizvod from './komponente/SamoProizvod/SamoProizod';
+>>>>>>> 9f2b27219b271e4acf7e404fd4cc7c0156a47b96
 
 function Rute ()
 {

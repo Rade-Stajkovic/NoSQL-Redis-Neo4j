@@ -7,6 +7,9 @@ using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
 using Neo4jClient.Cypher;
+using NBP_backend.Cache;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace NBP_backend.Services
 {
@@ -14,9 +17,27 @@ namespace NBP_backend.Services
     {
         private readonly IGraphClient _client;
 
-        public CategoryServices(IGraphClient client)
+        private ICacheProvider cacheProvider { get; set; }
+        public CategoryServices(IGraphClient client, ICacheProvider cacheProvider)
         {
             _client = client;
+            this.cacheProvider = cacheProvider;
+        }
+
+        public List<Category> GetAll()
+        {
+            List<Category> categories = new List<Category>();
+
+            var res = _client.Cypher.Match("(n:Category)")
+                                     //.With("n{.*, tempID:id(n) as u")
+                                     .With("n{.Name, tempID:id(n)} as u")
+                                     .Return(u => u.As<Category>()).ResultsAsync.Result;
+            var us = res.ToList();
+            foreach (var x in res)
+            {
+                categories.Add(x);
+            }
+            return categories;
         }
 
         public async void CreateCategory(String name)
@@ -38,6 +59,7 @@ namespace NBP_backend.Services
                 await _client.Cypher.Match("(d:Product), (c:Category)")
                                     .Where("id(d) = $ID AND id(c) = $ID2")
                                     .WithParams(dict)
+                                   
                                     .Create("(d)-[:IN]->(c)").ExecuteWithoutResultsAsync();
                 return true;
             }
@@ -71,6 +93,36 @@ namespace NBP_backend.Services
             }
 
 
+        }
+
+        public  List<Product> GetAllProduct(int IDCat)
+        {
+            string idCat = IDCat.ToString();
+            var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category"+idCat);
+            if (prodRedis.Count == 0)
+            {
+                var prod = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
+                                 .Where("id(c) = $ID ")
+                                 .WithParam("ID", IDCat)
+                                 .With("d{.*, ID:id(d)} as d")
+                                 .Return(d => d.As<Product>()).ResultsAsync.Result;
+                var prod2 = prod.ToList();
+                List<Product> products = new List<Product>();
+
+                foreach (var product in prod2)
+                {
+                    products.Add(product);
+                    cacheProvider.SetInHashSet("category" + idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
+                }
+
+
+                return products;
+            }
+            else
+            {
+                return prodRedis;
+            }
+            
         }
     }
 

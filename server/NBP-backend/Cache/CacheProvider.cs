@@ -45,7 +45,7 @@ namespace NBP_backend.Cache
 
         public void SetInHashSet(string hashSetKey, string key, string value)
         {
-            using (var redis = ConnectionMultiplexer.Connect("forumredis.redis.cache.windows.net:6380,password=g2oBjNVXBflRqmYLzQoajOxLv5wXvUj3DAzCaF0PtVw=,ssl=True,abortConnect=False"))
+            using (var redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
             {
                 var db = redis.GetDatabase();
                 db.HashSet(hashSetKey, new HashEntry[] { new HashEntry(key, value) });
@@ -54,7 +54,7 @@ namespace NBP_backend.Cache
 
         public T GetFromHashSet<T>(string hashSetKey, string key)
         {
-            using (var redis = ConnectionMultiplexer.Connect("forumredis.redis.cache.windows.net:6380,password=g2oBjNVXBflRqmYLzQoajOxLv5wXvUj3DAzCaF0PtVw=,ssl=True,abortConnect=False"))
+            using (var redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
             {
                 var db = redis.GetDatabase();
                 var hashEntires = db.HashGetAll(hashSetKey);
@@ -73,7 +73,7 @@ namespace NBP_backend.Cache
 
         public List<T> GetAllFromHashSet<T>(string hashSetKey) where T : class
         {
-            using(var redis = ConnectionMultiplexer.Connect("forumredis.redis.cache.windows.net:6380,password=g2oBjNVXBflRqmYLzQoajOxLv5wXvUj3DAzCaF0PtVw=,ssl=True,abortConnect=False"))
+            using(var redis = ConnectionMultiplexer.Connect("127.0.0.1:6379"))
             {
                 var db = redis.GetDatabase();
                 var hashEntires = db.HashGetAll(hashSetKey);
@@ -87,5 +87,6 @@ namespace NBP_backend.Cache
                 return result;
             }
         }
+
     }
 }

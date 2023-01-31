@@ -7,15 +7,21 @@ using Neo4jClient;
 using NBP_backend.Models;
 using System.Collections;
 using Neo4jClient.Cypher;
+using NBP_backend.Cache;
+using System.Text.Json;
+using StackExchange.Redis;
+
 namespace NBP_backend.Services
 {
     public class MarketServices
     {
         private readonly IGraphClient _client;
+        private readonly ICacheProvider _cacheProvider;
 
-        public MarketServices(IGraphClient client)
+        public MarketServices(IGraphClient client, ICacheProvider _cacheProvider)
         {
             _client = client;
+            this._cacheProvider = _cacheProvider;
         }
 
         public List<Market> GetAll()
@@ -44,7 +50,7 @@ namespace NBP_backend.Services
                                     .Where("id(n) = $IDM")
                                     .WithParam("IDM", IDMarket)
 
-                                    .Return(p => p.As<Product>()).ResultsAsync.Result;
+                                    .Return(p => p.As<Product>()).ResultsAsync.Result.Distinct();
             var us = res.ToList();
             foreach (var x in res)
             {
@@ -52,6 +58,7 @@ namespace NBP_backend.Services
             }
             return products;
         }
+
         public async void CreateMarket(String name)
         {
             Market market = new Market();
@@ -75,16 +82,16 @@ namespace NBP_backend.Services
 
         public async Task<bool> StoreProduct(int IDMarket, int IDProduct, int price, bool sale, bool available)
         {
-            var market = await _client.Cypher.Match("(d:Market)")
-                                     .Where("id(d) = $ID")
-                                     .WithParam("ID", IDMarket)
-                                     .Return(d => d.As<User>()).ResultsAsync;
-            var product = await _client.Cypher.Match("(d:Product)")
-                                     .Where("id(d) = $ID")
-                                     .WithParam("ID", IDProduct)
-                                     .Return(d => d.As<Product>()).ResultsAsync;
-            var sr = market.FirstOrDefault();
-            var pr = product.FirstOrDefault();
+            //var market = await _client.Cypher.Match("(d:Market)")
+            //                         .Where("id(d) = $ID")
+            //                         .WithParam("ID", IDMarket)
+            //                         .Return(d => d.As<User>()).ResultsAsync;
+            //var product = await _client.Cypher.Match("(d:Product)")
+            //                         .Where("id(d) = $ID")
+            //                         .WithParam("ID", IDProduct)
+            //                         .Return(d => d.As<Product>()).ResultsAsync;
+            //var sr = market.FirstOrDefault();
+            //var pr = product.FirstOrDefault();
             IDictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("ID", IDMarket);
             dict.Add("ID2", IDProduct);
@@ -130,6 +137,22 @@ namespace NBP_backend.Services
                                     .WithParams(dict)
                                     .Set("v.price = $newPrice, v.sale = $newSale, v.available =  $newAvailable ")
                                     .WithParams(dict2).ExecuteWithoutResultsAsync();
+
+                Notification notification = new Notification();
+                notification.ProductID = IDProduct;
+                notification.Market = "Maxi";
+                notification.Text = "Banane na akciji";
+                DateTime time = new DateTime();
+                
+                notification.Time = DateTime.Now;
+                var redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379");
+
+                ISubscriber pub = redisPubSub.GetSubscriber();
+                pub.Publish(IDProduct.ToString(), JsonSerializer.Serialize(notification));
+
+                NotificationServices ns = new NotificationServices(_client);
+                ns.CreateNotification(notification, IDProduct);
+
                 return true;
             }
             catch (Exception e)
@@ -159,12 +182,40 @@ namespace NBP_backend.Services
                 Console.WriteLine(e.StackTrace);
                 return false;
             }
-
-
-
-
         }
 
+        public async Task<List<Product>> GetAllProductsOnSale(int IDMarket)
+        { 
+            List<Product> products = new List<Product>();
+            string s = "MarketSale" + IDMarket;
+            var redis = _cacheProvider.GetAllFromHashSet<Product>(s);
+            if (redis.Count == 0)
+            {
+                try
+                {
+                    var prod = await _client.Cypher.Match("(d:Product)-[v:STORED_IN]-(c:Market)")
+                                        .Where("id(c) = $ID AND v.sale = " + true)
+                                        .With("d{.*, ID:id(d)} as u")
+                                        .WithParam("ID", IDMarket)
+                                        .Return(u => u.As<Product>()).ResultsAsync;
+                    var prod2 = prod.ToList();
+
+                    foreach (var p in prod2)
+                    {
+                        products.Add(p);
+                        _cacheProvider.SetInHashSet(s, p.ID.ToString(), JsonSerializer.Serialize(p));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                return products;
+            }
+
+            else return redis;
+            
+        }
         
     }
 }

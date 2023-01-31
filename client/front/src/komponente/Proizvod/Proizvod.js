@@ -1,5 +1,11 @@
 import React from "react";
+<<<<<<< HEAD
 import Axios from "axios";
+=======
+
+import { useState, useEffect } from "react";
+
+>>>>>>> 9f2b27219b271e4acf7e404fd4cc7c0156a47b96
 import {
   MDBContainer,
   MDBRow,
@@ -7,10 +13,13 @@ import {
   MDBCard,
   MDBCardBody,
   MDBCardImage,
+  MDBCardTitle,
+  MDBCardText,
   MDBIcon,
   MDBRipple,
   MDBBtn,
 } from "mdb-react-ui-kit";
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 //import "./ecommerce-category-product.css";
 function Proizvod(props) {
@@ -114,3 +123,71 @@ function Proizvod(props) {
    );
  }
  export default Proizvod;
+=======
+
+
+
+import axios from "axios";
+import { useParams } from 'react-router-dom';
+
+function Proizvod() {
+  const { IDCat } = useParams();
+  const [products, setProducts] = useState([]);
+ 
+
+  useEffect(() => {
+    axios.put(`https://localhost:4433/GetAllProducts/${IDCat}`)
+      .then(res => {
+        setProducts(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, [IDCat]);
+
+  console.log(products)
+  return (
+    <div>
+      {products.length === 0 ? (
+        <div>No products found.</div>
+      ) : (
+        <MDBRow>
+          {products.map((e, index) => {
+            return (
+              <MDBCol md="4" key={index}>
+                <MDBCard  className="position-relative" >
+                  <MDBCardImage
+                    src="https://cegermarket.rs/wp-content/uploads/2020/06/ceger-market-banane.jpg"
+                    fluid
+                    className="w-100"
+                    alt={e.name}
+                  />
+   <MDBCardBody>
+        <MDBRow className="d-flex justify-content-center align-items-center">
+            <MDBCol>
+                <MDBCardTitle className="text-center">{e.name}</MDBCardTitle>
+                <div className="text-center">
+                <a href={`/proizvod/${e.id}`}>
+                    <MDBBtn outline color="primary" size="sm" className="mt-2">
+                        OPSIRNIJE
+                    </MDBBtn>
+                    </a>
+                </div>
+            </MDBCol>
+        </MDBRow>
+    </MDBCardBody>
+                </MDBCard>
+              </MDBCol>
+            );
+          })}
+        </MDBRow>
+      )}
+   
+
+    </div>
+  );
+}
+
+
+export default Proizvod;
+>>>>>>> 9f2b27219b271e4acf7e404fd4cc7c0156a47b96

@@ -1,8 +1,9 @@
-
+import SliderP from "./komponente/SliderP/SliderP";
 
 function Pocetna()
 {
-    return(<div>Pocetak</div>);
+    
+    return (<SliderP/>);
 }
 
 export default Pocetna;

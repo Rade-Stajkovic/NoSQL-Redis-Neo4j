@@ -15,6 +15,12 @@ namespace NBP_backend.Models
 
         public String Name { get; set; }
 
+        public int Reviews { get; set; }
+
+        public int GoodReviews { get; set; }
+
+        public string Picture { get; set; }
+
         public List<Market> Markets { get; set; }
 
         public Category Category

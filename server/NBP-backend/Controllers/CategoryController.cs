@@ -3,6 +3,8 @@ using NBP_backend.Services;
 using System.Threading.Tasks;
 using System;
 using NBP_backend.Models;
+using System.Collections.Generic;
+using NBP_backend.Cache;
 
 namespace NBP_backend.Controllers
 {
@@ -10,10 +12,22 @@ namespace NBP_backend.Controllers
     {
         private readonly CategoryServices _categoryServices;
 
+       
         public CategoryController(CategoryServices CategoryServices)
         {
             _categoryServices = CategoryServices;
+           
         }
+
+
+        [HttpGet]
+        [Route("GetAllCategories")]
+
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(_categoryServices.GetAll());
+        }
+
 
         [HttpPost]
         [Route("CreateCategory/{name}")]
@@ -33,7 +47,7 @@ namespace NBP_backend.Controllers
                 bool res1 = res.Result;
                 if (res1)
                 {
-                    return Ok("Uspesno ste dodali kategoriju proizvodu");
+                    return Ok("Uspesno ste dodali proizvod kategoriji");
                 }
                 return BadRequest("Nista");
             }
@@ -62,5 +76,25 @@ namespace NBP_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPut]
+        [Route("GetAllProducts/{IDCat}")]
+        public IActionResult GetAll(int IDCat)
+        {
+            try
+
+            {
+                List<Product> prod = _categoryServices.GetAllProduct(IDCat);
+                return Ok(prod);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
+    
     }
 }

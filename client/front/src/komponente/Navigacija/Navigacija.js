@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Logovanje from '../Logovanje/Logovanje';
 import Proizvod from '../Proizvod/Proizvod';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Notifikacije from '../Notifikacije/Notifikacije';
+import './Navigacija.css'
 
 
 import {
@@ -19,23 +23,53 @@ import {
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBCollapse,
-  MDBBadge
+  MDBBadge,
+  MDBPopover,
+  MDBPopoverBody,
+  MDBPopoverHeader,
+ 
 } from 'mdb-react-ui-kit';
 
 const Navigacija = (props) =>
 {
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const[login, setlogin]= useState("");
-
-  function loginshow()
+  const[notifications, setNotifications]= useState(false);
+  const [categories, setCategories] = useState();
+  const test = JSON.parse(localStorage.getItem('user-info'))
+  useEffect(()=>{
+    axios.get("https://localhost:4433/GetAllCategories")
+    .then(res => {
+      console.log(res)
+      setCategories(res.data)
+    })
+    
+    .catch(err => {
+      console.log(err)
+    })
+  },[])
+  
+  console.log(categories)
+  function notificationsShow()
   {
+    setNotifications(true);
+  }
+  function notificationsHide()
+  {
+    setNotifications(false);
+  }
+
+
+
+  function loginshow() {
     setlogin(true);
   }
-  function loginhide()
-  {
+  function loginhide() {
     setlogin(false);
   }
+
   return (
-    
+
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer fluid>
         <MDBNavbarBrand href='#'>Brand</MDBNavbarBrand>
@@ -44,8 +78,8 @@ const Navigacija = (props) =>
           aria-controls='navbarSupportedContent'
           aria-expanded='false'
           aria-label='Toggle navigation'
-          
-          
+
+
         >
           <MDBIcon icon='bars' fas />
         </MDBNavbarToggler>
@@ -57,16 +91,21 @@ const Navigacija = (props) =>
                 Početna
               </MDBNavbarLink>
             </MDBNavbarItem>
-            <MDBNavbarItem>
-              <MDBNavbarLink href='#'>Namirnice</MDBNavbarLink>
-            </MDBNavbarItem>
+
 
             <MDBNavbarItem>
-              <MDBNavbarLink href='#'>Piće</MDBNavbarLink>
-            </MDBNavbarItem>
-
-            <MDBNavbarItem>
-              <MDBNavbarLink href='#'>Hemija</MDBNavbarLink>
+              <MDBDropdown>
+                <MDBDropdownToggle tag='a' className='nav-link' role='button'>
+                  Kategorije
+                </MDBDropdownToggle>
+                <MDBDropdownMenu>
+                  {categories ? categories.map(category => (
+                    <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
+                      {category.name}
+                    </a></MDBDropdownItem>
+                  )) : <p>Loading...</p>}
+                </MDBDropdownMenu>
+              </MDBDropdown>
             </MDBNavbarItem>
 
             <MDBNavbarItem>
@@ -82,15 +121,11 @@ const Navigacija = (props) =>
               </MDBDropdown>
             </MDBNavbarItem>
 
-            
+
           </MDBNavbarNav>
 
           
-          <MDBNavbarItem >
-            <MDBNavbarLink href='#'>
-              <MDBIcon fas icon='shopping-cart' />
-            </MDBNavbarLink>
-          </MDBNavbarItem>
+          
           
 
           <form className='d-flex input-group w-auto'>
@@ -98,20 +133,33 @@ const Navigacija = (props) =>
             <MDBBtn color='primary'><MDBIcon fas icon="search" /></MDBBtn>
           </form>
 
-          {/* <MDBNavbarItem >
-          <MDBNavbarLink href="/logovanje" color='primary'>Prijava</MDBNavbarLink>
-          </MDBNavbarItem> */}
+          <div>   
+      {setNotifications && <Notifikacije onClose={() => setNotifications(false)}  />}
+    </div>
 
           <MDBNavbarItem>
-            <MDBNavbarLink onClick={loginshow} eventkey={2} >Prijavi se</MDBNavbarLink>
+            <MDBNavbarLink onClick={loginshow} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Prijavi se</MDBNavbarLink>
           </MDBNavbarItem>
-          <MDBNavbarItem >
-          <MDBNavbarLink href="/proizvod" color='primary'>Proizvodi</MDBNavbarLink>
-          </MDBNavbarItem>
-          
+
 
           <Logovanje show={login} onHide={loginhide}></Logovanje>
           
+          {/* <MDBNavbarItem> <MDBNavbarLink onClick={notificationsShow} eventkey={2}>Notifikacije </MDBNavbarLink></MDBNavbarItem>
+          <Notifikacije show={notifications} onHide={notificationsHide}></Notifikacije> */}
+          
+
+          {/* <MDBPopover color='secondary' btnChildren='Popover on bottom' placement='bottom' onClick={notificationsShow}></MDBPopover>
+          <Notifikacije show={notifications} onHide={notificationsHide}></Notifikacije> */}
+
+
+
+
+
+
+
+
+
+         
 
         </MDBCollapse>
       </MDBContainer>

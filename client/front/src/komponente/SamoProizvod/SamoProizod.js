@@ -19,9 +19,38 @@ import { useParams } from 'react-router-dom';
 
 function SamoProizvod() {
   const [product, setProduct] = useState();
-
+  let { IDUser } = useParams();
   let { IdProduct } = useParams();
   const [loading, setLoading] = useState(true);
+
+  // follow = () => {
+ 
+  // ///ovde ce samo da zaprati
+  //   useEffect(() => {
+  //     axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IDProduct}`)
+  //       .then(res => {
+  //         this.setState({ following: true });
+  //       })
+  //       .catch(err => {
+  //         console.log(err);
+  //       });
+  //   },);
+  // };
+
+  // unfollow = () => {
+  //   useEffect(() => {
+  //     axios.put(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IDProduct}`)
+  //       .then(res => {
+  //         this.setState({ following: false });
+  //       })
+  //       .catch(err => {
+  //         console.log(err);
+  //       });
+  //   },);
+  // };
+
+
+
 
 
   useEffect(() => {
@@ -111,13 +140,17 @@ function SamoProizvod() {
                       </div>
                     ))}
                   </div>
-                  <div className="d-flex flex-column mt-4">
-                    <MDBBtn color="primary" size="sm">
-                      Zaprati Proizvod
-                    </MDBBtn>
-                  
-
-                  </div>
+                  {/* <div className="d-flex flex-column mt-4">
+                    {this.state.following ? (
+                      <MDBBtn color="danger" size="sm" onClick={() => this.unfollow()}>
+                        Prestani da pratiš
+                      </MDBBtn>
+                    ) : (
+                      <MDBBtn color="primary" size="sm" onClick={() => this.follow()}>
+                        Zaprati Proizvod
+                      </MDBBtn>
+                    )}
+                  </div> */}
                 </MDBCol>
 
               </MDBRow>

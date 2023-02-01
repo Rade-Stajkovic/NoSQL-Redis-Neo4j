@@ -100,5 +100,28 @@ namespace NBP_backend.Services
            
 
         }
+
+
+        public List<OrderProduct> GetOrdersForDelivery(String deliveryName)
+        {
+          
+          
+          
+            
+                var rez= _client.Cypher.Match("(o:Order)-[:DELIVERED]->(d:Delivery)")
+                                 .Where("d.Name = $name ")
+                                 .WithParam("name", deliveryName)
+                               
+                                 .Return(o => o.As<OrderProduct>()).ResultsAsync.Result;
+               
+                List<OrderProduct> orders = rez.ToList();
+
+
+
+
+            return orders;
+    
+
+        }
     }
 }

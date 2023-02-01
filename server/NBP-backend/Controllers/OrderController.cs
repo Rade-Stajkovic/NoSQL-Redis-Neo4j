@@ -29,5 +29,20 @@ namespace NBP_backend.Controllers
             return Ok("Uspelo");
         }
 
+        [HttpGet]
+        [Route("GetOrdersForDelivery/{deliveryName}")]
+        public IActionResult GetAll(String deliveryName)
+        {
+            try
+            {
+                List<OrderProduct> prod = _orderServices.GetOrdersForDelivery(deliveryName);
+                return Ok(prod);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }

@@ -56,7 +56,7 @@ function SamoProizvod() {
     setFollowing(true);
     localStorage.setItem(`following-${IdProduct}`, true);
     try {
-      const response = await axios.put(`https://localhost:5001/User/FollowProduct/${IDUser}/${IdProduct}`);
+      const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
       alert(`Uspesno ste zapratili -${product.nameProduct}`);
     } catch (error) {
@@ -68,7 +68,7 @@ function SamoProizvod() {
     setFollowing(false);
     localStorage.removeItem(`following-${IdProduct}`);
     try {
-      const response = await axios.delete(`https://localhost:5001/User/UnFollowProduct/${IDUser}/${IdProduct}`);
+      const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
       alert("Uspeno ste odpratili proizovd");
     } catch (error) {
@@ -78,7 +78,7 @@ function SamoProizvod() {
 
 
   useEffect(() => {
-    axios.get(`https://localhost:5001/Product/GetMoreDetails/${IdProduct}`)
+    axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
       .then(res => {
         console.log(res.data);
         setProduct(res.data);
@@ -133,20 +133,20 @@ function SamoProizvod() {
                   </div>
 
                   <div className="mb-2 text-muted small">
-      <span>Reviews</span>
-      <span className="text-primary"> • </span>
-      <span style={{ color: product.rank >= 50 ? 'green' : 'inherit' }}>
-        {product.reviews}
-      </span>
-      <span className="text-primary"> • </span>
-      {product.rank >= 50 && <span>{product.rank}Preporučujemo proizvod</span>}
-      <br />
-    </div>
-                    <div>
-                      <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
-                      <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
-                    </div>
-                    
+                    <span>Reviews</span>
+                    <span className="text-primary"> • </span>
+                    <span>  {product.reviews}</span>
+                    <span className="text-primary"> • </span>
+                      <span style={{ color: product.rank >= 50 ? 'green' : 'inherit' }}>
+                        {product.rank} %
+                        {product.rank >= 50 && <span> !!! PREPORUČUJEMO PROIVOD !!!</span>}
+                      </span>
+                  </div>
+                  <div>
+                    <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
+                    <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
+                  </div>
+
                 </MDBCol>
 
 

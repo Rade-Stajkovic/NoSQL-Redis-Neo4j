@@ -52,7 +52,7 @@ function Logovanje(props)
       if ((document.getElementById('flexSwitchCheckDefault')).checked)
       {
         console.log("CEKIRANO");
-        let result = await fetch("https://localhost:5001/Delivery/LogIn/"+username+"/"+password,
+        let result = await fetch("https://localhost:44332/Delivery/LogIn/"+username+"/"+password,
         {method: 'GET',
         headers: {
 

@@ -26,7 +26,7 @@ function Kategorija() {
  
 
   useEffect(() => {
-    axios.put(`https://localhost:5001/GetAllProducts/${IDCat}`)
+    axios.put(`https://localhost:44332/GetAllProducts/${IDCat}`)
       .then(res => {
         setProducts(res.data);
       })

@@ -19,8 +19,8 @@ function Notifikacije(props){
   const[marketi, setMarketi]= useState("");
   
     const { onClose } = props;
-    console.log(props);
-    console.log(props.returnID);
+    // console.log(props);
+    // console.log(props.returnID);
 
     //notifikacije();
     async function notifikacije()

@@ -16,8 +16,8 @@ namespace NBP_backend.Services
     public class CategoryServices
     {
         private readonly IGraphClient _client;
-
         private ICacheProvider cacheProvider { get; set; }
+
         public CategoryServices(IGraphClient client, ICacheProvider cacheProvider)
         {
             _client = client;
@@ -28,16 +28,22 @@ namespace NBP_backend.Services
         {
             List<Category> categories = new List<Category>();
 
-            var res = _client.Cypher.Match("(n:Category)")
-                                     //.With("n{.*, tempID:id(n) as u")
-                                     .With("n{.Name, tempID:id(n)} as u")
-                                     .Return(u => u.As<Category>()).ResultsAsync.Result;
-            var us = res.ToList();
-            foreach (var x in res)
+            var redisList = cacheProvider.GetAllFromHashSet<Category>("Category");
+            if (redisList.Count == 0)
             {
-                categories.Add(x);
+                var res = _client.Cypher.Match("(n:Category)")
+                                         //.With("n{.*, tempID:id(n) as u")
+                                         .With("n{.Name, tempID:id(n)} as u")
+                                         .Return(u => u.As<Category>()).ResultsAsync.Result;
+                var us = res.ToList();
+                foreach (var x in res)
+                {
+                    cacheProvider.SetInHashSet("Category", x.tempID.ToString(), JsonSerializer.Serialize(x));
+                    categories.Add(x);
+                }
+                return categories;
             }
-            return categories;
+            else return redisList;
         }
 
         public async void CreateCategory(String name)

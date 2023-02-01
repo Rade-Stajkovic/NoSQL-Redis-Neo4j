@@ -61,10 +61,11 @@ namespace NBP_backend.Controllers
                 var delivery = await _deliveryServices.GetAll();
                 return Ok(delivery);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw;
             }
         }
+
     }
 }

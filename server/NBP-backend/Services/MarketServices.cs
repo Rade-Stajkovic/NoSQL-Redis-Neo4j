@@ -26,18 +26,25 @@ namespace NBP_backend.Services
 
         public List<Market> GetAll()
         {
-            List<Market> markets = new List<Market>();
-
-            var res = _client.Cypher.Match("(n:Market)")
-                                    .Return(n => n.As<Market>()).ResultsAsync.Result;
-                 
-                                    
-            var us = res.ToList();
-            foreach (var x in res)
+            var redisMarket = _cacheProvider.GetAllFromHashSet<Market>("Market");
+            if (redisMarket.Count == 0)
             {
-                markets.Add(x);
+                List<Market> markets = new List<Market>();
+
+                var res = _client.Cypher.Match("(n:Market)")
+                                        .With("n{.*, ID:id(n)} as n")
+                                        .Return(n => n.As<Market>()).ResultsAsync.Result;
+
+
+                var us = res.ToList();
+                foreach (var x in res)
+                {
+                    _cacheProvider.SetInHashSet("Market", x.ID.ToString(), JsonSerializer.Serialize(x));
+                    markets.Add(x);
+                }
+                return markets;
             }
-            return markets;
+            else return redisMarket;
         }
 
         public List<Product> GetAllProducts(int IDMarket)
@@ -82,16 +89,6 @@ namespace NBP_backend.Services
 
         public async Task<bool> StoreProduct(int IDMarket, int IDProduct, int price, bool sale, bool available)
         {
-            //var market = await _client.Cypher.Match("(d:Market)")
-            //                         .Where("id(d) = $ID")
-            //                         .WithParam("ID", IDMarket)
-            //                         .Return(d => d.As<User>()).ResultsAsync;
-            //var product = await _client.Cypher.Match("(d:Product)")
-            //                         .Where("id(d) = $ID")
-            //                         .WithParam("ID", IDProduct)
-            //                         .Return(d => d.As<Product>()).ResultsAsync;
-            //var sr = market.FirstOrDefault();
-            //var pr = product.FirstOrDefault();
             IDictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("ID", IDMarket);
             dict.Add("ID2", IDProduct);
@@ -114,9 +111,6 @@ namespace NBP_backend.Services
                 Console.WriteLine(e.StackTrace);
                 return false;
             }
-
-
-
 
         }
 

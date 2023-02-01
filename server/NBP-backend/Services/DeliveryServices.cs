@@ -49,7 +49,7 @@ namespace NBP_backend.Services
 
         }
 
-        public async Task<int> LogInDelivery(String name, String password)
+        public async Task<string> LogInDelivery(String name, String password)
         {
             try
             {
@@ -71,22 +71,22 @@ namespace NBP_backend.Services
 
                         });
 
-                        return 0;
+                        return delivery.Name;
 
                     }
                     else
                     {
-                        return -1;
+                        return null;
                     }
 
                 }
               
-                return -2;
+                return null;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return -5;
+                return null;
             }
         }
 

@@ -29,7 +29,8 @@ namespace NBP_backend.Services
             List<Market> markets = new List<Market>();
 
             var res = _client.Cypher.Match("(n:Market)")
-                                    .Return(n => n.As<Market>()).ResultsAsync.Result;
+                                    .With("n{.*, ID:id(n)} AS u")
+                                    .Return(u => u.As<Market>()).ResultsAsync.Result;
                  
                                     
             var us = res.ToList();
@@ -39,6 +40,8 @@ namespace NBP_backend.Services
             }
             return markets;
         }
+
+        
 
         public List<Product> GetAllProducts(int IDMarket)
         {
@@ -58,6 +61,10 @@ namespace NBP_backend.Services
             }
             return products;
         }
+
+
+
+        
 
         public async void CreateMarket(String name)
         {

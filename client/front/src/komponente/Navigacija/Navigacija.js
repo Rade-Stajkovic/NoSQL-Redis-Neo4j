@@ -36,21 +36,49 @@ const Navigacija = (props) =>
   const[login, setlogin]= useState("");
   const[notifications, setNotifications]= useState(false);
   const [categories, setCategories] = useState();
-  const test = JSON.parse(localStorage.getItem('user-info'))
+  const [markets, setMarkets] = useState();
+  const[user_info, setUserinfo]=useState("");
+  const[delivery_info, setDeliveryinfo]=useState("");
+  const user = JSON.parse(localStorage.getItem('user-info'));
+  const del=localStorage.getItem('delivery-info');
+ 
+
+  console.log(user);
   useEffect(()=>{
+   
+    
+    console.log(user);
+    if (user!=null)
+     setUserinfo(user);
+    // console.log(user_info);
+    console.log(del);
+
+    if (del!=null)
+      setDeliveryinfo(del);
+
 
     axios.get("https://localhost:5001/GetAllCategories")
     .then(res => {
       console.log(res)
       setCategories(res.data)
     })
-    
+    .catch(err => {
+      console.log(err)
+    })
+
+    axios.get("https://localhost:5001/GetAllMarkets")
+    .then(res => {
+      console.log(res)
+      setMarkets(res.data)
+    })
     .catch(err => {
       console.log(err)
     })
   },[])
   
   console.log(categories)
+  console.log(user_info);
+  console.log(markets);
   function notificationsShow()
   {
     setNotifications(true);
@@ -60,7 +88,7 @@ const Navigacija = (props) =>
     setNotifications(false);
   }
 
-
+  
 
   function loginshow() {
     setlogin(true);
@@ -69,11 +97,24 @@ const Navigacija = (props) =>
     setlogin(false);
   }
 
+  function logout()
+    {
+      if(localStorage.getItem('user-info')) 
+        localStorage.removeItem('user-info');
+      //history.push("/");
+      else 
+        localStorage.removeItem('delivery-info');
+      window.location.reload();
+    }
+
   return (
 
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer fluid>
-        <MDBNavbarBrand href='#'>Brand</MDBNavbarBrand>
+
+
+        { delivery_info ? (<><MDBNavbarBrand > {delivery_info}  </MDBNavbarBrand></>): (<> <MDBNavbarBrand href='#'><img src="https://cdn-icons-png.flaticon.com/512/2156/2156021.png" style={{ height: '30px', objectFit: 'cover' }} ></img></MDBNavbarBrand></>)}
+         
 
         <MDBNavbarToggler
           aria-controls='navbarSupportedContent'
@@ -101,7 +142,8 @@ const Navigacija = (props) =>
                 </MDBDropdownToggle>
                 <MDBDropdownMenu>
                   {categories ? categories.map(category => (
-                    <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
+                    // <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
+                    <MDBDropdownItem key={category.tempID} link >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
                       {category.name}
                     </a></MDBDropdownItem>
                   )) : <p>Loading...</p>}
@@ -115,9 +157,12 @@ const Navigacija = (props) =>
                   Akcije
                 </MDBDropdownToggle>
                 <MDBDropdownMenu>
-                  <MDBDropdownItem link>Mega Maxi</MDBDropdownItem>
-                  <MDBDropdownItem link>Idea</MDBDropdownItem>
-                  <MDBDropdownItem link>Metro</MDBDropdownItem>
+                {markets ? markets.map(market => (
+                    // <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
+                    <MDBDropdownItem key={market.id} link >  <a href={`/market/${market.name}/${market.id}`} style={{ color: '#393f81' }}>
+                      {market.name}
+                    </a></MDBDropdownItem>
+                  )) : <p>Loading...</p>}
                 </MDBDropdownMenu>
               </MDBDropdown>
             </MDBNavbarItem>
@@ -134,13 +179,7 @@ const Navigacija = (props) =>
             <MDBBtn color='primary'><MDBIcon fas icon="search" /></MDBBtn>
           </form>
 
-          <div>   
-      {setNotifications && <Notifikacije onClose={() => setNotifications(false)}  />}
-    </div>
-
-          <MDBNavbarItem>
-            <MDBNavbarLink onClick={loginshow} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Prijavi se</MDBNavbarLink>
-          </MDBNavbarItem>
+          
 
 
           <Logovanje show={login} onHide={loginhide}></Logovanje>
@@ -153,8 +192,33 @@ const Navigacija = (props) =>
           <Notifikacije show={notifications} onHide={notificationsHide}></Notifikacije> */}
 
 
+      {user_info ? (<> 
+          
+          <div>   
+            {setNotifications && <Notifikacije {...user_info} onClose={() => setNotifications(false)}  />}
+          </div>
 
+          <MDBNavbarItem>
+            <MDBNavbarLink onClick={logout} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Odjavi se</MDBNavbarLink>
+          </MDBNavbarItem>
+        </>  ) : (<>
+          </>)
+      }
 
+          
+    {user_info || delivery_info ? (<> 
+    
+
+          <MDBNavbarItem>
+            <MDBNavbarLink onClick={logout} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Odjavi se</MDBNavbarLink>
+          </MDBNavbarItem>
+        </>  ) : (<>
+        
+            <MDBNavbarLink onClick={loginshow} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Prijavi se</MDBNavbarLink>
+            <MDBNavbarLink href="/registracija" eventkey={2} style={{ whiteSpace: 'nowrap' }}>Registruj se</MDBNavbarLink>
+
+          </>)
+    }
 
 
 

@@ -2,9 +2,6 @@ import {Routes, Route, BrowserRouter} from 'react-router-dom';
 import Logovanje from './komponente/Logovanje/Logovanje';
 import Navigacija from './komponente/Navigacija/Navigacija';
 import React, { useEffect, useState } from 'react';
-import * as mdb from 'mdb-react-ui-kit';
-import { Spinner, Container } from 'react-bootstrap';
-import { Switch } from 'react-router-dom';
 import Registracija from './komponente/Registracija/Registracija';
 import Kategorija from './komponente/Kategorija/Kategorija';
 import Pocetna from './Pocetna'

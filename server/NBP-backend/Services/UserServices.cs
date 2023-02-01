@@ -191,16 +191,7 @@ namespace NBP_backend.Services
 
                
                 if (rez2 == null)
-                {
-
-                   
-                                   
-
-                    //await _client.Cypher.Match("(d:User), (c:Product)")
-                    //                .Where("id(d) = $ID AND id(c) = $ID2")
-                    //                .WithParams(dict)
-                    //                .Create("(d)-[:SEARCHED {lastSearched:"+true+"}]->(c)").ExecuteWithoutResultsAsync();
-
+                { 
 
                     await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
                                    .Where("id(d) = $ID AND id(c) <> $ID2")
@@ -224,15 +215,6 @@ namespace NBP_backend.Services
                                         .Set("rel.lastSearched = $v")
                                         .WithParam("v",true)
                                         .ExecuteWithoutResultsAsync();
-                    //await _client.Cypher.Match("(d:User)-[rel:SEARCHED]->(c:Product)")
-                    //                    .Where("id(d) = $ID AND id(c) = $ID2")
-                    //                    .WithParams(dict)
-                    //                    .Delete("rel").ExecuteWithoutResultsAsync();
-
-                    //await _client.Cypher.Match("(d:User), (c:Product)")
-                    //                .Where("id(d) = $ID AND id(c) = $ID2")
-                    //                .WithParams(dict)
-                    //                .Create("(d)-[:SEARCHED]->(c)").ExecuteWithoutResultsAsync();
 
                     return true;
                 }

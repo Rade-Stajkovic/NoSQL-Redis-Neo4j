@@ -1,9 +1,14 @@
-import SliderP from "./komponente/SliderP/SliderP";
+import React, { useEffect, useState } from 'react';
+const[products, setProducts]= useState("");
 
 function Pocetna()
 {
-    
-    return (<SliderP/>);
+    async function DataFetch() 
+    {
+        let result = fetch("")
+    }
+    return (<>
+    </>);
 }
 
 export default Pocetna;

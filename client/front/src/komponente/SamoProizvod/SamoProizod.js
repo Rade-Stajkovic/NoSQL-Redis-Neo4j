@@ -1,5 +1,6 @@
 import React from "react";
 import Narudzbina from "../Narudzbina/Narudzbina";
+import Recenzija from "../Recenzija/Recenzija";
 import {
   MDBContainer,
   MDBRow,
@@ -23,14 +24,20 @@ function SamoProizvod() {
   const [order, setOrder] = useState("");
 
   let { IdProduct } = useParams();
-  
+
   const [loading, setLoading] = useState(true);
 
-  const [following, setFollowing] = useState(localStorage.getItem('following') || false);
+  const [following, setFollowing] = useState(localStorage.getItem(`following-${IdProduct}`) || false);
 
-  
-  
+  const [showModal, setShowModal] = useState(false);
 
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   function ordershow() {
     setOrder(true);
   }
@@ -39,27 +46,27 @@ function SamoProizvod() {
   }
 
   let test = localStorage.getItem('user-info');
-  let IDUser=null;
+  let IDUser = null;
   if (test) {
     test = JSON.parse(test);
-   IDUser = test.returnID;
-  }  
- 
-  const Follow =async () => {
+    IDUser = test.returnID;
+  }
+
+  const Follow = async () => {
     setFollowing(true);
-    localStorage.setItem('following', true);
+    localStorage.setItem(`following-${IdProduct}`, true);
     try {
       const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
-      alert("Uspeno ste  zapratili proizovd");
+      alert(`Uspesno ste zapratili -${product.nameProduct}`);
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   const Unfollow = async () => {
     setFollowing(false);
-    localStorage.removeItem('following');
+    localStorage.removeItem(`following-${IdProduct}`);
     try {
       const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
@@ -68,7 +75,7 @@ function SamoProizvod() {
       console.error(error);
     }
   };
-  
+
 
   useEffect(() => {
     axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
@@ -118,23 +125,28 @@ function SamoProizvod() {
 
                   </div>
                   <div className="mt-1 mb-0 text-muted small">
-                    <span>Sifra Proizvoda</span>
+                    <span>Proizvodjač :</span>
                     <span className="text-primary"> • </span>
-                    <span>481545555444</span>
+                    <span>{product.manufacturer}</span>
                     <span className="text-primary">  </span>
 
                   </div>
+
                   <div className="mb-2 text-muted small">
-                    <span>Kategorija</span>
+                    <span>Rewiews</span>
                     <span className="text-primary"> • </span>
-                    <span>{product.category}</span>
+                    <span>{product.reviews}</span>
                     <span className="text-primary"> • </span>
                     <span>
-                      povrce
+                      {product.rank}
                       <br />
                     </span>
-                  </div>
 
+                    <div>
+                      <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
+                      <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
+                    </div>
+                    </div>
                 </MDBCol>
 
 
@@ -145,18 +157,18 @@ function SamoProizvod() {
                         <div className="d-flex flex-row align-items-center">
                           <h4 className="mb-1 me-1">{market.market}-</h4>
                           <h4 className="mb-1 me-1 ml-auto">{market.price} din</h4>
-                          
+
                         </div>
 
                       </div>
                     ))}
                   </div>
                   <div className="d-flex flex-column mt-4">
-                            <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
-                            <Narudzbina show={order} onHide={orderhide}  nameProduct={product.nameProduct}  marketData={product.stored}></Narudzbina>
+                    <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
+                  <Narudzbina show={order} onHide={orderhide} nameProduct={product.nameProduct} marketData={product.stored}></Narudzbina>
                   <div className="d-flex flex-column mt-4">
                     {following ? (
-                      <MDBBtn color="danger" size="sm" onClick={ Unfollow}>
+                      <MDBBtn color="danger" size="sm" onClick={Unfollow}>
                         Prestani da pratiš
                       </MDBBtn>
                     ) : (

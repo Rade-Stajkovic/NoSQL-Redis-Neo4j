@@ -57,7 +57,7 @@ function SamoProizvod() {
     setFollowing(true);
     localStorage.setItem(`following-${IdProduct}`, true);
     try {
-      const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IdProduct}`);
+      const response = await axios.put(`https://localhost:5001/User/FollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
       alert(`Uspesno ste zapratili -${product.nameProduct}`);
     } catch (error) {
@@ -69,7 +69,7 @@ function SamoProizvod() {
     setFollowing(false);
     localStorage.removeItem(`following-${IdProduct}`);
     try {
-      const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IdProduct}`);
+      const response = await axios.delete(`https://localhost:5001/User/UnFollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
       alert("Uspeno ste odpratili proizovd");
     } catch (error) {
@@ -79,7 +79,7 @@ function SamoProizvod() {
 
 
   useEffect(() => {
-    axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
+    axios.get(`https://localhost:5001/Product/GetMoreDetails/${IdProduct}`)
       .then(res => {
         console.log(res.data);
         setProduct(res.data);
@@ -140,7 +140,7 @@ function SamoProizvod() {
                     <span className="text-primary"> • </span>
                       <span style={{ color: product.rank >= 50 ? 'green' : 'inherit' }}>
                         {product.rank} %
-                        {product.rank >= 50 && <span> !!! PREPORUČUJEMO PROIVOD !!!</span>}
+                        {product.rank >= 50 && <span> !!! PREPORUČUJEMO PROIZVOD !!!</span>}
                       </span>
                   </div>
 

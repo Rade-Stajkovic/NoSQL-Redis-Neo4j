@@ -23,7 +23,8 @@ function App() {
         </a>
       </header>
     </div>*/
-    <div>
+    <div  className='bg-secondary bg-opacity-10' style={{width: '100%', height: '100%'}}>
+    
       
         <Rute />
  

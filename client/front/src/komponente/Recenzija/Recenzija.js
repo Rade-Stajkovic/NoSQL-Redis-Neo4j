@@ -35,7 +35,7 @@ const Recenzija = (props) => {
           setIdProduct(props.idProduct);
 
         try {
-            const response = await axios.post(`https://localhost:44332/Review/ReviewPoduct/${text}/${username}/${idProduct}/${recommend}`);
+            const response = await axios.post(`https://localhost:5001/Review/ReviewPoduct/${text}/${username}/${idProduct}/${recommend}`);
 
 
             if (response.status !== 200) {

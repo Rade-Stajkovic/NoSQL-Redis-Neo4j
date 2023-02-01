@@ -52,7 +52,7 @@ function Logovanje(props)
       if ((document.getElementById('flexSwitchCheckDefault')).checked)
       {
         console.log("CEKIRANO");
-        let result = await fetch("https://localhost:44332/Delivery/LogIn/"+username+"/"+password,
+        let result = await fetch("https://localhost:5001/Delivery/LogIn/"+username+"/"+password,
         {method: 'GET',
         headers: {
 
@@ -63,9 +63,10 @@ function Logovanje(props)
         let data = await result.text();
         console.log(data);
         localStorage.setItem("delivery-info",data);
+        window.location.href='dostava';
       }
       else{
-        let result = await fetch("https://localhost:44332/User/LogIn/"+username+"/"+password,
+        let result = await fetch("https://localhost:5001/User/LogIn/"+username+"/"+password,
         {method: 'GET',
         headers: {
 
@@ -77,10 +78,11 @@ function Logovanje(props)
         console.log(data);
         let userInfo = JSON.stringify(data);
         localStorage.setItem("user-info", userInfo);
+        window.location.href='/';
      }
         
       //   localStorage.setItem("user-info",JSON.stringify(data));
-       window.location.href='/';
+       
     }
   
 

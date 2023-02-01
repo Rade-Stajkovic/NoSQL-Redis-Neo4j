@@ -47,7 +47,7 @@ function Kategorija() {
               <MDBCol md="4" key={index}>
                 <MDBCard  className="position-relative" >
                   <MDBCardImage
-                    src="https://cegermarket.rs/wp-content/uploads/2020/06/ceger-market-banane.jpg"
+                    src={"https://localhost:44332/PicturesProduct/" + e.picture}
                     fluid
                     className="w-100"
                     alt={e.name}

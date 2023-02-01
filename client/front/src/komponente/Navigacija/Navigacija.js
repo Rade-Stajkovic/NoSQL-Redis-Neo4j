@@ -29,6 +29,7 @@ import {
   MDBPopoverHeader,
  
 } from 'mdb-react-ui-kit';
+import { Button } from 'react-bootstrap';
 
 const Navigacija = (props) =>
 {
@@ -39,9 +40,32 @@ const Navigacija = (props) =>
   const [markets, setMarkets] = useState();
   const[user_info, setUserinfo]=useState("");
   const[delivery_info, setDeliveryinfo]=useState("");
+  const[search, setSearch] = useState("");
+  const[param, setparam] = useState("")
   const user = JSON.parse(localStorage.getItem('user-info'));
   const del=localStorage.getItem('delivery-info');
  
+
+  async function searchh(param)
+  {
+    let search = await fetch("https://localhost:44332/Product/SearchProducts/"+param ,
+    {
+      method: 'GET',
+        headers: {
+
+            "Content-type": "application/json;charset=UTF-8",
+
+        }
+    } ).then(Response=>{
+      return Response.json();
+    }).then((data)=>{
+      const pro ={
+        ...data[0],
+      }
+      console.log(pro);
+      setSearch(pro);
+    });
+  }
 
   console.log(user);
   useEffect(()=>{
@@ -101,7 +125,8 @@ const Navigacija = (props) =>
   function logout()
     {
       if(localStorage.getItem('user-info')) 
-        localStorage.removeItem('user-info');
+       // localStorage.removeItem('user-info');
+       localStorage.clear();
       //history.push("/");
       else 
         localStorage.removeItem('delivery-info');
@@ -184,12 +209,11 @@ const Navigacija = (props) =>
           
           
           
-          {user_info ? 
-          (<><form className='d-flex input-group w-auto'>
-            <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' />
-            <MDBBtn color='primary'><MDBIcon fas icon="search" /></MDBBtn>
-          </form></>):(<></>)}
-          
+
+          <form className='d-flex input-group w-auto'>
+            <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' onChange={(e)=>{setparam(e.target.value)}} />
+            <Button color='primary'><MDBIcon fas icon="search" onClick={searchh} /></Button>
+          </form>
 
           
 

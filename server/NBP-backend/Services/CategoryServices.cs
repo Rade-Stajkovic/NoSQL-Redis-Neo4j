@@ -103,10 +103,9 @@ namespace NBP_backend.Services
 
         public async  Task<List<Product>> GetAllProduct(int IDCat)
         {
-            string idCat = IDCat.ToString();
-            //var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category"+idCat);
-            //if (prodRedis.Count == 0)
-            //{
+            var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category" + IDCat);
+            if (prodRedis.Count == 0)
+            {
                 var prod = await _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
                                  .Where("id(c) = $ID ")
                                  .WithParam("ID", IDCat)
@@ -118,17 +117,17 @@ namespace NBP_backend.Services
                 foreach (var product in prod2)
                 {
                     products.Add(product);
-                    //cacheProvider.SetInHashSet("category" + idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
+                    cacheProvider.SetInHashSet("category" + IDCat, product.ID.ToString(), JsonSerializer.Serialize(product));
                 }
 
 
                 return products;
-            //}
-            //else
-            //{
-            //    return prodRedis;
-            //}
-            
+            }
+            else
+            {
+                return prodRedis;
+            }
+
         }
     }
 

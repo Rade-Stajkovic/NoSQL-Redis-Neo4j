@@ -22,7 +22,7 @@ function Notifikacije(props){
     // console.log(props);
     // console.log(props.returnID);
 
-    notifikacije();
+    //notifikacije();
     async function notifikacije()
     {
 

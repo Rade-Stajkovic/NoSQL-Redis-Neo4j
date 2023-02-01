@@ -81,7 +81,7 @@ const Navigacija = (props) =>
       setDeliveryinfo(del);
 
 
-    axios.get("https://localhost:44332/GetAllCategories")
+    axios.get("https://localhost:5001/GetAllCategories")
     .then(res => {
       console.log(res)
       setCategories(res.data)
@@ -90,7 +90,7 @@ const Navigacija = (props) =>
       console.log(err)
     })
 
-    axios.get("https://localhost:44332/GetAllMarkets")
+    axios.get("https://localhost:5001/GetAllMarkets")
     .then(res => {
       console.log(res)
       setMarkets(res.data)
@@ -136,7 +136,7 @@ const Navigacija = (props) =>
 
   return (
 
-    <MDBNavbar expand='lg' light bgColor='light'>
+    <MDBNavbar expand='lg'  bgColor='light'>
       <MDBContainer fluid>
 
 

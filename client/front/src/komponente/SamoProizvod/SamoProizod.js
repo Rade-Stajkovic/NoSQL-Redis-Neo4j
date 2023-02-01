@@ -108,7 +108,7 @@ function SamoProizvod() {
                     className="bg-image rounded hover-zoom hover-overlay"
                   >
                     <MDBCardImage
-                      src={"https://localhost:44332/PicturesProduct/" + product.pictureProduct}
+                      src={"https://localhost:5001/PicturesProduct/" + product.pictureProduct}
                       fluid
                       className="w-100"
                     />

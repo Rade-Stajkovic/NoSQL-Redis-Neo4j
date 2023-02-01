@@ -12,6 +12,8 @@ namespace NBP_backend.HelperClasses
 
         public int Reviews { get; set; }
 
+        public int GoodReviews { get; set; }    
+
         public int Rank { get; set; }
 
         public string PictureProduct { get; set; }

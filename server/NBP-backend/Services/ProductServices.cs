@@ -57,8 +57,9 @@ namespace NBP_backend.Services
         public async Task<ProductSerialization> GetProduct(int ID)
         {
             var results = await _client.Cypher
-                .Match("(k:Manufacturer) - [MANUFACTURED] - (n:Product)")
+                .Match("(n:Product)")
                 .Where("id(n)=$id")
+                .OptionalMatch("(n) - [MANUFACTURED] - (k:Manufacturer)")
                 .WithParam("id", ID)
                 .With("n{.*, ID:id(n), Manufacturer:k.Name} as u")
                 .Return(u => u.As<ProductSerialization>())
@@ -154,8 +155,8 @@ namespace NBP_backend.Services
 
         public async Task<IActionResult> GetMoreDetailsBetter(int IdProduct)
         {
-            var redis = cacheProvider.GetAllFromHashSet<ProductSerializationRedis>("Product_Redis_" + IdProduct);
-            if (redis.Count == 0)
+            var redis = cacheProvider.GetAllFromHashSet<ProductSerializationRedis>("Product_Redis_" + IdProduct).FirstOrDefault();
+            if (redis == null)
             {
                 ProductSerialization p = await GetProduct(IdProduct);
                 List<Stored> list = await GetMoreDetails(IdProduct);
@@ -172,6 +173,7 @@ namespace NBP_backend.Services
                     PictureProduct = p.Picture,
                     Manufacturer = p.Manufacturer,
                     Reviews = p.Reviews,
+                    GoodReviews = p.GoodReviews,
                     Rank = rew ? (int)((p.GoodReviews / p.Reviews) * 100) : 0,
                     Stored = list
                 };

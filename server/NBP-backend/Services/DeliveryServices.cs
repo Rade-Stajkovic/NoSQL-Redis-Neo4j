@@ -33,7 +33,35 @@ namespace NBP_backend.Services
             _sub = _redisPubSub.GetSubscriber();
             _hub = hub;
         }
+        public async Task<List<Delivery>> GetAll()
+        {
+            try
+            {
+                List<Delivery> returnList = new List<Delivery>();
+                var redislist = cacheProvider.GetAllFromHashSet<Delivery>("Delivery");
+                if (redislist.Count == 0)
+                {
+                    var list = await _client.Cypher.Match("(d:Delivery)")
+                                    .Return(d => d.As<Delivery>()).ResultsAsync;
+                    var listt = list.ToList();
+                    foreach (var delivery in listt)
+                    {
+                        cacheProvider.SetInHashSet("Delivery", delivery.Name.ToString(), JsonSerializer.Serialize(delivery));
+                    }
+                    foreach (var l in listt)
+                    {
+                        returnList.Add(l);
+                    }
+                    return returnList;
+                }
 
+                return redislist;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
 
         public async void CreateDelivery(String name, String password, int deliveryCost)
         {
@@ -49,7 +77,7 @@ namespace NBP_backend.Services
 
         }
 
-        public async Task<List<Delivery>> GetAll()
+        public async Task<List<Delivery>> GetAllDelivery()
         {
             try
             {
@@ -119,35 +147,7 @@ namespace NBP_backend.Services
                 return -5;
             }
         }
-        public async Task<List<Delivery>> GetAll()
-        {
-            try
-            {
-                List<Delivery> returnList = new List<Delivery>();
-                var redislist = cacheProvider.GetAllFromHashSet<Delivery>("Delivery");
-                if (redislist.Count == 0)
-                {
-                    var list = await _client.Cypher.Match("(d:Delivery)")
-                                    .Return(d => d.As<Delivery>()).ResultsAsync;
-                    var listt = list.ToList();
-                    foreach (var delivery in listt)
-                    {
-                        cacheProvider.SetInHashSet("Delivery", delivery.Name.ToString(), JsonSerializer.Serialize(delivery));
-                    }
-                    foreach (var l in listt)
-                    {
-                        returnList.Add(l);
-                    }
-                    return returnList;
-                }
-
-                return redislist;
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-        }
+        
 
     }
 }

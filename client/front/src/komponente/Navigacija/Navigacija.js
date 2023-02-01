@@ -46,7 +46,7 @@ const Navigacija = (props) =>
   const del=localStorage.getItem('delivery-info');
  
 
-  async function searchh(param)
+  async function searchh()
   {
     let search = await fetch("https://localhost:44332/Product/SearchProducts/"+param ,
     {
@@ -75,7 +75,7 @@ const Navigacija = (props) =>
     if (user!=null)
      setUserinfo(user);
     // console.log(user_info);
-    console.log(del);
+    //console.log(del);
 
     if (del!=null)
       setDeliveryinfo(del);
@@ -83,7 +83,7 @@ const Navigacija = (props) =>
 
     axios.get("https://localhost:5001/GetAllCategories")
     .then(res => {
-      console.log(res)
+      //console.log(res)
       setCategories(res.data)
     })
     .catch(err => {
@@ -92,7 +92,7 @@ const Navigacija = (props) =>
 
     axios.get("https://localhost:5001/GetAllMarkets")
     .then(res => {
-      console.log(res)
+      //console.log(res)
       setMarkets(res.data)
     })
     .catch(err => {

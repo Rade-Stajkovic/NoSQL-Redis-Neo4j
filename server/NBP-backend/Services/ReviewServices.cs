@@ -85,6 +85,22 @@ namespace NBP_backend.Services
                                  .ExecuteWithoutResultsAsync();
 
         }
+
+        public List<Review> GetReview(int ID)
+        {
+            var results = _client.Cypher
+            .Match("(r:Review)-[:REVIEWED]->(n:Product)")
+            .Where("id(n)=$id")
+            .WithParam("id", ID)
+            .Return(r => r.As<Review>())
+            .ResultsAsync.Result; var reviews = results.ToList();
+            List<Review> list = new List<Review>(); foreach (var rev in reviews)
+            {
+                list.Add(rev);
+            }
+            return list;
+        }
+
     }
 }
 

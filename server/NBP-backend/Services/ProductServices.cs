@@ -154,8 +154,8 @@ namespace NBP_backend.Services
 
         public async Task<IActionResult> GetMoreDetailsBetter(int IdProduct)
         {
-            var redis = cacheProvider.GetAllFromHashSet<ProductSerializationRedis>("Product_Redis_" + IdProduct);
-            if (redis.Count == 0)
+            var redis = cacheProvider.GetAllFromHashSet<ProductSerializationRedis>("Product_Redis_" + IdProduct).FirstOrDefault();
+            if (redis == null)
             {
                 ProductSerialization p = await GetProduct(IdProduct);
                 List<Stored> list = await GetMoreDetails(IdProduct);

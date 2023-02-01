@@ -1,6 +1,7 @@
 import React from "react";
 import Narudzbina from "../Narudzbina/Narudzbina";
 import Recenzija from "../Recenzija/Recenzija";
+import Komentari from "../Komentari/Komentari";
 import {
   MDBContainer,
   MDBRow,
@@ -31,6 +32,7 @@ function SamoProizvod() {
   const [user_info,setUserinfo]=useState(JSON.parse(localStorage.getItem('user-info')));
 
   const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -45,6 +47,14 @@ function SamoProizvod() {
   function orderhide() {
     setOrder(false);
   }
+
+  const handleOpenModal2 = () => {
+    setShowModal2(true);
+  };
+
+  const handleCloseModal2= () => {
+    setShowModal2(false);
+  };
 
   let test = localStorage.getItem('user-info');
   let IDUser = null;
@@ -146,14 +156,19 @@ function SamoProizvod() {
 
 
 
+                    <div>
+                    <MDBBtn color="primary" size="sm" onClick={handleOpenModal2}>Prikazi Recenzije</MDBBtn>
+                    <Komentari show={showModal2} onHide={handleCloseModal2} nameProduct={product.nameProduct} idProduct={product.idProduct} />
+                  </div>
+                 
 
                   {user_info ? (<> <div>
                     <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
                     <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
                   </div></>):
                   (<></>)}
-
-                 
+              
+                  
 
                 </MDBCol>
 

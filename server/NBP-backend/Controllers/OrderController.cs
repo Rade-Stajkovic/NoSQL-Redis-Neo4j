@@ -29,19 +29,12 @@ namespace NBP_backend.Controllers
             return Ok("Uspelo");
         }
 
-        [HttpGet]
-        [Route("GetOrdersForDelivery/{deliveryName}")]
-        public IActionResult GetAll(String deliveryName)
+        [HttpPut]
+        [Route("ChangeOrderStatusToTrue/{OrderID}")]
+        public async Task<IActionResult> ChangeOrderStatusToTrue(int OrderID)
         {
-            try
-            {
-                List<OrderProduct> prod = _orderServices.GetOrdersForDelivery(deliveryName);
-                return Ok(prod);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            _orderServices.ChangeOrderStatusToTrue(OrderID);
+            return Ok("Potvrdili ste da je narudzbina dostavljena");
         }
 
     }

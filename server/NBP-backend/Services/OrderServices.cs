@@ -59,7 +59,8 @@ namespace NBP_backend.Services
                         Location = location,
                         PhoneNumber = phoneNumber,
                         UserName = user.Name,
-                        ProductName = productName
+                        ProductName = productName,
+                        Delivered = false
                     };
 
 
@@ -83,21 +84,21 @@ namespace NBP_backend.Services
 
                     ISubscriber pub = redisPubSub.GetSubscriber();
                     pub.Publish(delivery.Name, JsonSerializer.Serialize(order));
-
-
-
                 }
-
-               
-
             }
             catch (Exception)
             {
 
                 throw;
             }
+        }
 
-           
+        public async void ChangeOrderStatusToTrue(int OrderID)
+        {
+            await _client.Cypher.Match("(o:Order)")
+               .Where("id(o) = $Id")
+               .WithParam("Id", OrderID)
+               .Set("o.Delivered = true").ExecuteWithoutResultsAsync();
 
         }
 

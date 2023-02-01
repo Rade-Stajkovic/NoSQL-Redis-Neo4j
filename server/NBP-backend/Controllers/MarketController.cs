@@ -58,7 +58,7 @@ namespace NBP_backend.Controllers
         [HttpPut]
 
          [Route("StoreProduct/{IDMarket}/{IDProduct}/{price}/{sale}/{available}")]
-        public IActionResult FollowProduct(int IDMarket, int IDProduct, int price, bool sale, bool available)
+        public IActionResult StoreProduct(int IDMarket, int IDProduct, int price, bool sale, bool available)
         {
             try
             {

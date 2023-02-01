@@ -9,6 +9,8 @@ using System.Collections;
 using Neo4jClient.Cypher;
 using NBP_backend.Cache;
 using System.Xml.Linq;
+using NBP_backend.HelperClasses;
+using System.Text.Json;
 
 namespace NBP_backend.Services
 {
@@ -26,6 +28,7 @@ namespace NBP_backend.Services
 
         public async void ReviewPoduct(String text, String username, int idProduct,bool recommend)
         {
+
             Review review = new Review();
             review.Username = username;
             review.Text = text;
@@ -54,11 +57,22 @@ namespace NBP_backend.Services
                         .WithParams(dict2)
                         .Create("(d)-[:MY_REVIEW]->(c)").ExecuteWithoutResultsAsync();
 
-         await _client.Cypher.Match("(p:Product)")
+            await _client.Cypher.Match("(p:Product)")
                                     .Where("id(p) ="+idProduct)
-                                 
+                                    
                                     .Set("p.Reviews = p.Reviews + 1, p.GoodReviews = p.GoodReviews +" + (recommend ? 1 : 0))
                                     .ExecuteWithoutResultsAsync();
+            var redis = _cacheProvider.GetAllFromHashSet<ProductSerializationRedis>("Product_Redis_" + idProduct).FirstOrDefault();
+            if (redis != null)
+            {
+                redis.Reviews = +1;
+                if (recommend)
+                {
+                    redis.GoodReviews = +1;
+                }
+                redis.Rank = (int)redis.GoodReviews / redis.Reviews * 100;
+            }
+            _cacheProvider.SetInHashSet("Product_Redis_" + idProduct, idProduct.ToString(), JsonSerializer.Serialize(redis));
         }
 
         public async void DeleteReviewPoduct(int idReview)

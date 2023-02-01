@@ -62,33 +62,25 @@ namespace NBP_backend.Services
                       .ExecuteWithoutResultsAsync();
         }
 
-        public async void CreateUser(String username, String password, String Name, String SurName)
+        public async void CreateUser(String username, String password, String Name, String Surname, String PhoneNumber, String Location)
         {
             User user = new User();
             user.UserName = username;
             user.Password = password;
             user.Name = Name;
-            user.Surname = SurName;
+            user.Surname = Surname;
+            user.PhoneNumber = PhoneNumber;
+            user.Location = Location;
             await _client.Cypher
                       .Create("(n:User $dept)")
                       .WithParam("dept", user)
                       .ExecuteWithoutResultsAsync();
            
         }
-
-        public async Task<int> LogInUser(String username, String password)
+        public async Task<User> LogInUser(String username, String password)
         {
             try
             {
-                
-
-
-                //var redis = await cacheProvider.GetAsync<User>(username);
-                //if (redis != null)
-                //{
-                //    return redis.returnID;
-                //}
-
                 var userr = await _client.Cypher.Match("(d:User)")
                                                 .Where((User d) => d.UserName == username)
                                                 .With("d{.*, returnID:id(d)} as u")
@@ -122,19 +114,19 @@ namespace NBP_backend.Services
                             });
                                     
                         }
-                        return sr.returnID;
+                        return sr;
                     }
                     else
                     {
-                        return -1;
+                        return null;
                     }
                 }
-                return -2;
+                return null;
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return -5;
+                return null;
             }
         }
 
@@ -144,12 +136,7 @@ namespace NBP_backend.Services
             dict.Add("ID", IDUser);
             dict.Add("ID2", IDProduct);
             try
-            {
-                //var rel = await _client.Cypher.Match("(d:User)-[v:FOLLOWING]-(c:Product)")
-                //                  .Where("id(d) = $ID AND id(c) = $ID2")
-                //                  .WithParams(dict)
-                               
-
+            { 
                 await _client.Cypher.Match("(d:User), (c:Product)")
                                     .Where("id(d) = $ID AND id(c) = $ID2")
                                     .WithParams(dict)

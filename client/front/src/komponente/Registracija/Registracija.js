@@ -12,6 +12,7 @@ import {
   MDBCheckbox,
   MDBValidation,
   MDBValidationItem,
+  MDBSwitch
  
 }
 from 'mdb-react-ui-kit';
@@ -24,6 +25,8 @@ function Registracija() {
     lname: '',
     username: '',
     password: '',
+    number:'',
+    location:''
     
   });
 
@@ -52,6 +55,8 @@ function Registracija() {
       const lnameValidationItem = document.getElementById('validationCustom02');
       const usernameValidationItem = document.getElementById('validationCustom03');
       const passwordValidationItem = document.getElementById('validationCustom04');
+      const numberValidationItem = document.getElementById('validationCustom05');
+      const locationValidationItem = document.getElementById('validationCustom06');
   
       if (!formValue.fname) {
         fnameValidationItem.setAttribute('invalid', true);
@@ -77,13 +82,16 @@ async function register()
             let password=formValue.password;
             let Name = formValue.fname;
             let SurName=formValue.lname;
-            let result = await fetch('https://localhost:44332/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName, {
+            let PhoneNumber=formValue.number;
+            let Location=formValue.location;
+
+            let result = await fetch('https://localhost:44332/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName+ '/' + PhoneNumber + '/' + Location, {
               method: 'POST'
             })
             .then(response => {
               console.log(response);
               if (response.ok) {
-                alert("Uspeno ste se registrovali, sada mozete dase ulogujete i koristite aplikaciju!");
+                alert("Uspeno ste se registrovali, sada mozete da se ulogujete i koristite aplikaciju!");
               } else {
                 throw new Error('Something went wrong');
               }
@@ -103,13 +111,13 @@ async function register()
         <MDBCardBody size='lg' >
           <MDBRow>
           <MDBValidation className='row g-3'>
-            <MDBCol  className='order-2 order-lg-1 d-flex flex-column align-items-center'>
-
+            <MDBCol  className='order-2 order-lg-1 d-flex flex-column align-items-center mx-4 '>
             <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-2">Registruj se</p>
+            <MDBRow className='pl-5'>
 
+            <MDBCol className='ml-5'>
 
-          
-              <div className="d-flex flex-row align-items-center mb-4 ">
+            <div className="d-flex flex-row align-items-center mb-4 ml-4 ">
 
               <MDBValidationItem feedback='Unesite ime' invalid>
               <MDBInput
@@ -123,19 +131,7 @@ async function register()
               </MDBValidationItem>
               </div>
 
-              <div className="d-flex flex-row align-items-center mb-4">
-              <MDBValidationItem feedback='Unesite prezime' invalid>
-              <MDBInput
-                value={formValue.lname}
-                name='lname'
-                onChange={onChange}
-                id='validationCustom02'
-                required
-                label='Prezime'
-                
-              />
-              </MDBValidationItem>
-              </div>
+
 
               <div className="d-flex flex-row align-items-center mb-4">
               <MDBValidationItem feedback="Unesite korisničko ime" invalid >
@@ -154,37 +150,92 @@ async function register()
               </div>
 
               <div className="d-flex flex-row align-items-center mb-4">
-              <MDBValidationItem feedback='Unesite lozinku' invalid>
+              <MDBValidationItem feedback="Unesite broj telefona" invalid >
               <MDBInput
-                value={formValue.password}
-                type='password'
-                onChange={onChange}
-                id='validationCustom04'
-                required
-                label='Lozinka'
-                name='password'
-              />
+                  value={formValue.number}
+                  name='number'
+                  onChange={onChange}
+                  className='form-control'
+                  id='validationCustom05'
+                  label='Broj telefona'
+                  required
+                  
+                />
+              
+              </MDBValidationItem>
+              </div>
+          </MDBCol>
+          <MDBCol>
+
+
+
+          <div className="d-flex flex-row align-items-center mb-4">
+            <MDBValidationItem feedback='Unesite prezime' invalid>
+            <MDBInput
+              value={formValue.lname}
+              name='lname'
+              onChange={onChange}
+              id='validationCustom02'
+              required
+              label='Prezime'
+              
+            />
             </MDBValidationItem>
-              </div>
+            </div>
 
-              <div className='mb-4'>
-              <MDBValidationItem className='col-12' feedback='Morate da prihvatite pre registracije.' invalid>
-        <MDBCheckbox label='Slažem se sa uslovima korišćenja'   id='invalidCheck' required />
-      </MDBValidationItem>
-              </div>
 
-              <MDBBtn type='submit' size='lg'  className='mb-4' onClick={handleSubmit} >REGISTRACIJA</MDBBtn>
+            <div className="d-flex flex-row align-items-center mb-4">
+            <MDBValidationItem feedback='Unesite lozinku' invalid>
+            <MDBInput
+              value={formValue.password}
+              type='password'
+              onChange={onChange}
+              id='validationCustom04'
+              required
+              label='Lozinka'
+              name='password'
+            />
+            </MDBValidationItem>
+            </div>
+
+            <div className="d-flex flex-row align-items-center mb-4">
+            <MDBValidationItem feedback="Unesite adresu" invalid >
+            <MDBInput
+                value={formValue.location}
+                name='location'
+                onChange={onChange}
+                className='form-control'
+                id='validationCustom06'
+                label='Adresa'
+                required
+                
+              />
+            
+            </MDBValidationItem>
+            </div>
+
+          </MDBCol>
+
+
+
+      </MDBRow>
+                 
+      <div className='mb-2'>
+        <MDBValidationItem className='col-12 mb-3' feedback='Morate da prihvatite pre registracije.' invalid>
+           <MDBCheckbox label='Slažem se sa uslovima korišćenja'   id='invalidCheck' required />
+        </MDBValidationItem>
+      </div>
+
+
+
+      <MDBBtn type='submit' size='lg'  className='mb-4' onClick={handleSubmit} >REGISTRACIJA</MDBBtn>
             
               
-            </MDBCol>
+    </MDBCol>
             
-            <MDBCol  className='order-1 order-lg-2 d-flex align-items-center'>
-              <MDBCardImage src='https://img.freepik.com/free-vector/seasonal-sale-discounts-presents-purchase-visiting-boutiques-luxury-shopping-price-reduction-promotional-coupons-special-holiday-offers-vector-isolated-concept-metaphor-illustration_335657-2766.jpg' fluid/>
-            
-
-
-              
-            </MDBCol>
+    <MDBCol  className='order-1 order-lg-2 d-flex align-items-center'>
+      <MDBCardImage src='https://img.freepik.com/free-vector/seasonal-sale-discounts-presents-purchase-visiting-boutiques-luxury-shopping-price-reduction-promotional-coupons-special-holiday-offers-vector-isolated-concept-metaphor-illustration_335657-2766.jpg' fluid/>
+    </MDBCol>
 
 </MDBValidation>
           </MDBRow>

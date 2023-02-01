@@ -20,7 +20,8 @@ import {
   MDBModalBody,
   MDBModalHeader,
   MDBModalTitle,
-  MDBModalFooter
+  MDBModalFooter,
+  MDBSwitch
 }
 from 'mdb-react-ui-kit';
 
@@ -40,11 +41,46 @@ function Logovanje(props)
     
 
 
+
     async function login()
     {
+      console.log(username, password);
+        let item = {username, password};
+        var heders = {};
+      console.log(document.getElementById('flexSwitchCheckDefault'));
+
+      if ((document.getElementById('flexSwitchCheckDefault')).checked)
+      {
+        console.log("CEKIRANO");
+        let result = await fetch("https://localhost:44332/Delivery/LogIn/"+username+"/"+password,
+        {method: 'GET',
+        headers: {
+
+            "Content-type": "application/json;charset=UTF-8",
+
+        }});
+        console.log(result);
+        let data = await result.text();
+        console.log(data);
+        localStorage.setItem("delivery-info",data);
+      }
+      else{
+        let result = await fetch("https://localhost:44332/User/LogIn/"+username+"/"+password,
+        {method: 'GET',
+        headers: {
+
+            "Content-type": "application/json;charset=UTF-8",
+
+        }});
+
+        let data = await result.json();
+        console.log(data);
+        let userInfo = JSON.stringify(data);
+        localStorage.setItem("user-info", userInfo);
+     }
         
-        console.log(username, password);
-        
+      //   localStorage.setItem("user-info",JSON.stringify(data));
+       window.location.href='/';
     }
   
 
@@ -82,6 +118,10 @@ function Logovanje(props)
 
                  <MDBInput wrapperClass='mb-4' label='Korisničko ime' id='formControlLg' type='username' size="lg" onChange={(e)=>setUserName(e.target.value)}/>
                  <MDBInput wrapperClass='mb-4' label='Lozinka' id='formControlLg' type='password' size="lg"  onChange={(e)=>setPassword(e.target.value)}/>
+
+                <div className='mb-4'>
+                  <MDBSwitch id='flexSwitchCheckDefault' label='Prijavi se kao dostavljač' />
+                </div>
 
                <MDBBtn className="mb-4 px-5"  size='lg'  onClick={login}>Prijavi se</MDBBtn>
               

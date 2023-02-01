@@ -16,12 +16,34 @@ namespace NBP_backend.Services
     public class CategoryServices
     {
         private readonly IGraphClient _client;
-
         private ICacheProvider cacheProvider { get; set; }
+
         public CategoryServices(IGraphClient client, ICacheProvider cacheProvider)
         {
             _client = client;
             this.cacheProvider = cacheProvider;
+        }
+
+        public List<Category> GetAll()
+        {
+            List<Category> categories = new List<Category>();
+
+            var redisList = cacheProvider.GetAllFromHashSet<Category>("Category");
+            if (redisList.Count == 0)
+            {
+                var res = _client.Cypher.Match("(n:Category)")
+                                         //.With("n{.*, tempID:id(n) as u")
+                                         .With("n{.Name, tempID:id(n)} as u")
+                                         .Return(u => u.As<Category>()).ResultsAsync.Result;
+                var us = res.ToList();
+                foreach (var x in res)
+                {
+                    cacheProvider.SetInHashSet("Category", x.tempID.ToString(), JsonSerializer.Serialize(x));
+                    categories.Add(x);
+                }
+                return categories;
+            }
+            else return redisList;
         }
 
         public async void CreateCategory(String name)
@@ -83,7 +105,7 @@ namespace NBP_backend.Services
         {
             string idCat = IDCat.ToString();
             var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category"+idCat);
-            if(prodRedis.Count == 0)
+            if (prodRedis.Count == 0)
             {
                 var prod = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
                                  .Where("id(c) = $ID ")
@@ -96,21 +118,16 @@ namespace NBP_backend.Services
                 foreach (var product in prod2)
                 {
                     products.Add(product);
-                    cacheProvider.SetInHashSet("category"+idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
+                    cacheProvider.SetInHashSet("category" + idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
                 }
 
-               
+
                 return products;
             }
             else
             {
                 return prodRedis;
             }
-          
-          
-
-           
-
             
         }
     }

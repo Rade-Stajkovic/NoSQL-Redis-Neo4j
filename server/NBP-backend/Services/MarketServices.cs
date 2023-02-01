@@ -24,16 +24,16 @@ namespace NBP_backend.Services
             this._cacheProvider = _cacheProvider;
         }
 
-        public List<Market> GetAll()
+        public async Task<List<Market>> GetAll()
         {
             var redisMarket = _cacheProvider.GetAllFromHashSet<Market>("Market");
             if (redisMarket.Count == 0)
             {
                 List<Market> markets = new List<Market>();
 
-                var res = _client.Cypher.Match("(n:Market)")
+                var res = await _client.Cypher.Match("(n:Market)")
                                         .With("n{.*, ID:id(n)} as n")
-                                        .Return(n => n.As<Market>()).ResultsAsync.Result;
+                                        .Return(n => n.As<Market>()).ResultsAsync;
 
 
                 var us = res.ToList();
@@ -50,18 +50,18 @@ namespace NBP_backend.Services
 
         
 
-        public List<Product> GetAllProducts(int IDMarket)
+        public async Task<List<Product>> GetAllProducts(int IDMarket)
         {
             List<Product> products = new List<Product>();
 
-         
 
-            var res = _client.Cypher.Match("(n:Market)<-[STORED_IN]-(p:Product)")
+
+            var res = await _client.Cypher.Match("(n:Market)<-[STORED_IN]-(p:Product)")
                                     .Where("id(n) = $IDM")
                                     .WithParam("IDM", IDMarket)
 
-                                    .Return(p => p.As<Product>()).ResultsAsync.Result.Distinct();
-            var us = res.ToList();
+                                    .Return(p => p.As<Product>()).ResultsAsync;
+            var us = res.Distinct().ToList();
             foreach (var x in res)
             {
                 products.Add(x);

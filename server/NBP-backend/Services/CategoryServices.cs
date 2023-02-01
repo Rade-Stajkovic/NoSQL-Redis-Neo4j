@@ -24,17 +24,17 @@ namespace NBP_backend.Services
             this.cacheProvider = cacheProvider;
         }
 
-        public List<Category> GetAll()
+        public async Task<List<Category>> GetAll()
         {
             List<Category> categories = new List<Category>();
 
             var redisList = cacheProvider.GetAllFromHashSet<Category>("Category");
             if (redisList.Count == 0)
             {
-                var res = _client.Cypher.Match("(n:Category)")
+                var res = await _client.Cypher.Match("(n:Category)")
                                          //.With("n{.*, tempID:id(n) as u")
                                          .With("n{.Name, tempID:id(n)} as u")
-                                         .Return(u => u.As<Category>()).ResultsAsync.Result;
+                                         .Return(u => u.As<Category>()).ResultsAsync;
                 var us = res.ToList();
                 foreach (var x in res)
                 {
@@ -101,33 +101,33 @@ namespace NBP_backend.Services
 
         }
 
-        public  List<Product> GetAllProduct(int IDCat)
+        public async  Task<List<Product>> GetAllProduct(int IDCat)
         {
             string idCat = IDCat.ToString();
-            var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category"+idCat);
-            if (prodRedis.Count == 0)
-            {
-                var prod = _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
+            //var prodRedis = cacheProvider.GetAllFromHashSet<Product>("category"+idCat);
+            //if (prodRedis.Count == 0)
+            //{
+                var prod = await _client.Cypher.Match("(d:Product)-[v:IN]-(c:Category)")
                                  .Where("id(c) = $ID ")
                                  .WithParam("ID", IDCat)
                                  .With("d{.*, ID:id(d)} as d")
-                                 .Return(d => d.As<Product>()).ResultsAsync.Result;
+                                 .Return(d => d.As<Product>()).ResultsAsync;
                 var prod2 = prod.ToList();
                 List<Product> products = new List<Product>();
 
                 foreach (var product in prod2)
                 {
                     products.Add(product);
-                    cacheProvider.SetInHashSet("category" + idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
+                    //cacheProvider.SetInHashSet("category" + idCat, product.ID.ToString(), JsonSerializer.Serialize(product));
                 }
 
 
                 return products;
-            }
-            else
-            {
-                return prodRedis;
-            }
+            //}
+            //else
+            //{
+            //    return prodRedis;
+            //}
             
         }
     }

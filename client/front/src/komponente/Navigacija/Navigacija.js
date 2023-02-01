@@ -39,7 +39,7 @@ const Navigacija = (props) =>
   const test = JSON.parse(localStorage.getItem('user-info'))
   useEffect(()=>{
 
-    axios.get("https://localhost:5001/GetAllCategories")
+    axios.get("https://localhost:44332/GetAllCategories")
     .then(res => {
       console.log(res)
       setCategories(res.data)

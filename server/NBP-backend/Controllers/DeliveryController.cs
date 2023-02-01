@@ -52,6 +52,19 @@ namespace NBP_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-
+        [HttpGet]
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var delivery = await _deliveryServices.GetAll();
+                return Ok(delivery);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }

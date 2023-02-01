@@ -23,10 +23,11 @@ function SamoProizvod() {
   const [order, setOrder] = useState("");
 
   let { IdProduct } = useParams();
-  let { IDUser } = useParams();
+  
   const [loading, setLoading] = useState(true);
 
-  const [following, setFollowing] = useState(false);
+  const [following, setFollowing] = useState(localStorage.getItem('following') || false);
+
   
   
 
@@ -37,34 +38,37 @@ function SamoProizvod() {
     setOrder(false);
   }
 
-  // if(localStorage.getItem('user-info'))
-  // {
-  //   test =JSON.parse(localStorage.getItem('user-info'));
-  //   bearer = 'Bearer ' + test.token;
-  //   console.log(bearer);
-  // }
-
-  useEffect(() => {
-    const followOrUnfollow = following ? Unfollow : Follow;
-  
-    axios.put(`https://localhost:44332/User/{followOrUnfollow}Product/${IDUser}/${IdProduct}`)
-      .then(res => {
-        setFollowing(!following);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }, [following, IDUser, IdProduct]);
-  
-  function Follow () {
-    console.log("Following product");
+  let test = localStorage.getItem('user-info');
+  let IDUser=null;
+  if (test) {
+    test = JSON.parse(test);
+   IDUser = test.returnID;
+  }  
+ 
+  const Follow =async () => {
+    setFollowing(true);
+    localStorage.setItem('following', true);
+    try {
+      const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IdProduct}`);
+      console.log(response.data);
+      alert("Uspeno ste  zapratili proizovd");
+    } catch (error) {
+      console.error(error);
+    }
   };
   
-  function Unfollow() {
-    console.log("Unfollowing product");
+  const Unfollow = async () => {
+    setFollowing(false);
+    localStorage.removeItem('following');
+    try {
+      const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IdProduct}`);
+      console.log(response.data);
+      alert("Uspeno ste odpratili proizovd");
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-
+  
 
   useEffect(() => {
     axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
@@ -141,21 +145,22 @@ function SamoProizvod() {
                         <div className="d-flex flex-row align-items-center">
                           <h4 className="mb-1 me-1">{market.market}-</h4>
                           <h4 className="mb-1 me-1 ml-auto">{market.price} din</h4>
-                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
-                            <Narudzbina show={order} onHide={orderhide}  nameProduct={product.nameProduct} price={market.price} market={market.market}></Narudzbina>
+                          
                         </div>
 
                       </div>
                     ))}
                   </div>
                   <div className="d-flex flex-column mt-4">
+                            <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
+                            <Narudzbina show={order} onHide={orderhide}  nameProduct={product.nameProduct}  marketData={product.stored}></Narudzbina>
+                  <div className="d-flex flex-column mt-4">
                     {following ? (
-                      <MDBBtn color="danger" size="sm" onClick={ Unfollow()}>
+                      <MDBBtn color="danger" size="sm" onClick={ Unfollow}>
                         Prestani da pratiš
                       </MDBBtn>
                     ) : (
-                      <MDBBtn color="primary" size="sm" onClick={Follow()}>
+                      <MDBBtn color="primary" size="sm" onClick={Follow}>
                         Zaprati Proizvod
                       </MDBBtn>
                     )}

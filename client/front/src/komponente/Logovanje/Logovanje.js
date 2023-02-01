@@ -63,6 +63,7 @@ function Logovanje(props)
         let data = await result.text();
         console.log(data);
         localStorage.setItem("delivery-info",data);
+        window.location.href='dostava';
       }
       else{
         let result = await fetch("https://localhost:44332/User/LogIn/"+username+"/"+password,
@@ -77,10 +78,11 @@ function Logovanje(props)
         console.log(data);
         let userInfo = JSON.stringify(data);
         localStorage.setItem("user-info", userInfo);
+        window.location.href='/';
      }
         
       //   localStorage.setItem("user-info",JSON.stringify(data));
-       window.location.href='/';
+       
     }
   
 

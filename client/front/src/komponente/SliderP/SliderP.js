@@ -35,7 +35,7 @@ function SliderP ()  {
 const [products, setProducts] = useState();
 
 useEffect(() => {
-  axios.get("https://localhost:5001/User/GetRecommendedSecond/"+14)
+  axios.get("https://localhost:44332/User/GetRecommendedSecond/"+14)
     .then(res => {
       setProducts(res.data);
     })

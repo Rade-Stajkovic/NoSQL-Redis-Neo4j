@@ -85,7 +85,7 @@ async function register()
             let PhoneNumber=formValue.number;
             let Location=formValue.location;
 
-            let result = await fetch('https://localhost:5001/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName+ '/' + PhoneNumber + '/' + Location, {
+            let result = await fetch('https://localhost:44332/User/CreateUser/' + username + '/' + password + '/' + Name + '/' + SurName+ '/' + PhoneNumber + '/' + Location, {
               method: 'POST'
             })
             .then(response => {

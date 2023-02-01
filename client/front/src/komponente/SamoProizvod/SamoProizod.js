@@ -79,7 +79,7 @@ function SamoProizvod() {
 
 
   useEffect(() => {
-    axios.get(`https://localhost:5001/Product/GetMoreDetails/${IdProduct}`)
+    axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
       .then(res => {
         console.log(res.data);
         setProduct(res.data);

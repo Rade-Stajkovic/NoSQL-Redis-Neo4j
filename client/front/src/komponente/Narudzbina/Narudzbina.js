@@ -27,7 +27,7 @@ const Narudzbina = (props) => {
 
     useEffect(() => {
 
-        axios.get("https://localhost:5001/Delivery/GetAll")
+        axios.get("https://localhost:44332/Delivery/GetAll")
             .then(res => {
                 console.log(res)
                 setDeliveries(res.data)
@@ -51,7 +51,7 @@ const Narudzbina = (props) => {
         }
 
         try {
-            const response = await axios.post(`https://localhost:5001/Order/MakeOrder/${selectedMarket}/${nameProduct}/${cena}/${kolicina}/${lokacija}/${brtel}/${dostavljac}/${IDUser}`);
+            const response = await axios.post(`https://localhost:44332/Order/MakeOrder/${selectedMarket}/${nameProduct}/${cena}/${kolicina}/${lokacija}/${brtel}/${dostavljac}/${IDUser}`);
 
 
             if (response.status !== 200) {

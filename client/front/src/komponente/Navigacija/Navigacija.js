@@ -81,7 +81,7 @@ const Navigacija = (props) =>
       setDeliveryinfo(del);
 
 
-    axios.get("https://localhost:5001/GetAllCategories")
+    axios.get("https://localhost:44332/GetAllCategories")
     .then(res => {
       console.log(res)
       setCategories(res.data)
@@ -90,7 +90,7 @@ const Navigacija = (props) =>
       console.log(err)
     })
 
-    axios.get("https://localhost:5001/GetAllMarkets")
+    axios.get("https://localhost:44332/GetAllMarkets")
     .then(res => {
       console.log(res)
       setMarkets(res.data)
@@ -208,12 +208,13 @@ const Navigacija = (props) =>
 
           
           
-          
-
-          <form className='d-flex input-group w-auto'>
+          {delivery_info ? (<></>):
+          (<><form className='d-flex input-group w-auto'>
             <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' onChange={(e)=>{setparam(e.target.value)}} />
             <Button color='primary'><MDBIcon fas icon="search" onClick={searchh} /></Button>
-          </form>
+          </form></>)}
+
+          
 
           
 

@@ -28,7 +28,7 @@ function Notifikacije(props){
 
 
 
-    let result =  await fetch("https://localhost:5001/Notification/GetUserNotification/"+props.returnID,
+    let result =  await fetch("https://localhost:44332/Notification/GetUserNotification/"+props.returnID,
     {method: 'GET',
     headers: {
 
@@ -50,7 +50,7 @@ function Notifikacije(props){
               
     return (
         
-            <MDBPopover color='light' btnChildren={<><a  class=" mx-3">
+            <MDBPopover color='light' btnChildren={<><a  className=" mx-3">
             <i className="fas fa-envelope fa-2x"></i>
             
           </a> </>}> 

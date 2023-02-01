@@ -10,6 +10,7 @@ using NBP_backend.Services;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using NBP_backend.Services.Fajlovi;
+using NBP_backend.HelperClasses;
 
 namespace NBP_backend.Controllers
 {
@@ -74,7 +75,7 @@ namespace NBP_backend.Controllers
 
         public async Task<IActionResult> GetMoreDetails(int IdProduct)
         {
-            return new JsonResult(await _productServices.GetMoreDetails(IdProduct));
+            return await _productServices.GetMoreDetailsBetter(IdProduct);
         }
     }
 }

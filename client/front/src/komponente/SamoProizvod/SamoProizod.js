@@ -1,5 +1,5 @@
 import React from "react";
-
+import Narudzbina from "../Narudzbina/Narudzbina";
 import {
   MDBContainer,
   MDBRow,
@@ -18,52 +18,64 @@ import { useParams } from 'react-router-dom';
 
 
 function SamoProizvod() {
+
   const [product, setProduct] = useState();
-  let { IDUser } = useParams();
+  const [order, setOrder] = useState("");
+
   let { IdProduct } = useParams();
+  
   const [loading, setLoading] = useState(true);
 
-  // follow = () => {
+  const [following, setFollowing] = useState(localStorage.getItem('following') || false);
+
+  
+  
+
+  function ordershow() {
+    setOrder(true);
+  }
+  function orderhide() {
+    setOrder(false);
+  }
+
+  let test = localStorage.getItem('user-info');
+  let IDUser=null;
+  if (test) {
+    test = JSON.parse(test);
+   IDUser = test.returnID;
+  }  
  
-  // ///ovde ce samo da zaprati
-  //   useEffect(() => {
-  //     axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IDProduct}`)
-  //       .then(res => {
-  //         this.setState({ following: true });
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   },);
-  // };
-
-  // unfollow = () => {
-  //   useEffect(() => {
-  //     axios.put(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IDProduct}`)
-  //       .then(res => {
-  //         this.setState({ following: false });
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   },);
-  // };
-
-
-
-
+  const Follow =async () => {
+    setFollowing(true);
+    localStorage.setItem('following', true);
+    try {
+      const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IdProduct}`);
+      console.log(response.data);
+      alert("Uspeno ste  zapratili proizovd");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const Unfollow = async () => {
+    setFollowing(false);
+    localStorage.removeItem('following');
+    try {
+      const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IdProduct}`);
+      console.log(response.data);
+      alert("Uspeno ste odpratili proizovd");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
   useEffect(() => {
     axios.get(`https://localhost:44332/Product/GetMoreDetails/${IdProduct}`)
       .then(res => {
-        if (res.data && res.data.length > 0) {
-          setProduct(res.data);
-          setLoading(false);
-          console.log(res.data)
-        }
-        else {
-          console.error("nema podataka za proizvod", IdProduct)
-        }
+        console.log(res.data);
+        setProduct(res.data);
+        setLoading(false)
       })
       .catch(err => {
         console.log(err);
@@ -101,7 +113,7 @@ function SamoProizvod() {
                   </MDBRipple>
                 </MDBCol>
                 <MDBCol md="6">
-                  <h5>{product.name}</h5>
+                  <h5>{product.nameProduct}</h5>
                   <div className="d-flex flex-row">
 
                   </div>
@@ -128,29 +140,31 @@ function SamoProizvod() {
 
                 <MDBCol md="6" lg="3" className="border-sm-start-none border-start">
                   <div>
-                    {product.map(market => (
+                    {product.stored.map(market => (
                       <div key={market.id} className="d-flex flex-column align-items-start mb-1">
                         <div className="d-flex flex-row align-items-center">
                           <h4 className="mb-1 me-1">{market.market}-</h4>
                           <h4 className="mb-1 me-1 ml-auto">{market.price} din</h4>
-                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <MDBBtn color="primary" size="sm" > NARUCI</MDBBtn></div>
+                          
                         </div>
 
                       </div>
                     ))}
                   </div>
-                  {/* <div className="d-flex flex-column mt-4">
-                    {this.state.following ? (
-                      <MDBBtn color="danger" size="sm" onClick={() => this.unfollow()}>
+                  <div className="d-flex flex-column mt-4">
+                            <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
+                            <Narudzbina show={order} onHide={orderhide}  nameProduct={product.nameProduct}  marketData={product.stored}></Narudzbina>
+                  <div className="d-flex flex-column mt-4">
+                    {following ? (
+                      <MDBBtn color="danger" size="sm" onClick={ Unfollow}>
                         Prestani da pratiš
                       </MDBBtn>
                     ) : (
-                      <MDBBtn color="primary" size="sm" onClick={() => this.follow()}>
+                      <MDBBtn color="primary" size="sm" onClick={Follow}>
                         Zaprati Proizvod
                       </MDBBtn>
                     )}
-                  </div> */}
+                  </div>
                 </MDBCol>
 
               </MDBRow>

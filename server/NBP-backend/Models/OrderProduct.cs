@@ -24,6 +24,6 @@ namespace NBP_backend.Models
 
         public String PhoneNumber { get; set; }
 
-
+        public bool Delivered { get; set; }
     }
 }

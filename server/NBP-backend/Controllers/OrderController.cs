@@ -29,5 +29,13 @@ namespace NBP_backend.Controllers
             return Ok("Uspelo");
         }
 
+        [HttpPut]
+        [Route("ChangeOrderStatusToTrue/{OrderID}")]
+        public async Task<IActionResult> ChangeOrderStatusToTrue(int OrderID)
+        {
+            _orderServices.ChangeOrderStatusToTrue(OrderID);
+            return Ok("Potvrdili ste da je narudzbina dostavljena");
+        }
+
     }
 }

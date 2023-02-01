@@ -65,7 +65,7 @@ function Logovanje(props)
         localStorage.setItem("delivery-info",data);
       }
       else{
-        let result = await fetch("https://localhost:44332/User/LogIn/"+username+"/"+password,
+        let result = await fetch("https://localhost:5001/User/LogIn/"+username+"/"+password,
         {method: 'GET',
         headers: {
 

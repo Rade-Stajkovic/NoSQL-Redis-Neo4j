@@ -174,7 +174,7 @@ namespace NBP_backend.Services
                     Manufacturer = p.Manufacturer,
                     Reviews = p.Reviews,
                     GoodReviews = p.GoodReviews,
-                    Rank = rew ? (int)((p.GoodReviews / p.Reviews) * 100) : 0,
+                    Rank = rew ? (int)(((double)p.GoodReviews / p.Reviews) * 100) : 0,
                     Stored = list
                 };
                 cacheProvider.SetInHashSet("Product_Redis_" + IdProduct, IdProduct.ToString(), JsonSerializer.Serialize(info) );

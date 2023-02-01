@@ -198,9 +198,7 @@ const Navigacija = (props) =>
             {setNotifications && <Notifikacije {...user_info} onClose={() => setNotifications(false)}  />}
           </div>
 
-          <MDBNavbarItem>
-            <MDBNavbarLink onClick={logout} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Odjavi se</MDBNavbarLink>
-          </MDBNavbarItem>
+         
         </>  ) : (<>
           </>)
       }

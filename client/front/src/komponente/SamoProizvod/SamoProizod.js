@@ -28,6 +28,7 @@ function SamoProizvod() {
   const [loading, setLoading] = useState(true);
 
   const [following, setFollowing] = useState(localStorage.getItem(`following-${IdProduct}`) || false);
+  const [user_info,setUserinfo]=useState(JSON.parse(localStorage.getItem('user-info')));
 
   const [showModal, setShowModal] = useState(false);
 
@@ -142,10 +143,17 @@ function SamoProizvod() {
                         {product.rank >= 50 && <span> !!! PREPORUČUJEMO PROIVOD !!!</span>}
                       </span>
                   </div>
-                  <div>
+
+
+
+
+                  {user_info ? (<> <div>
                     <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
                     <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
-                  </div>
+                  </div></>):
+                  (<></>)}
+
+                 
 
                 </MDBCol>
 
@@ -163,7 +171,12 @@ function SamoProizvod() {
                       </div>
                     ))}
                   </div>
-                  <div className="d-flex flex-column mt-4">
+
+
+
+
+                  {user_info ? (<>
+                    <div className="d-flex flex-column mt-4">
                     <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
                   <Narudzbina show={order} onHide={orderhide} nameProduct={product.nameProduct} marketData={product.stored}></Narudzbina>
                   <div className="d-flex flex-column mt-4">
@@ -177,6 +190,14 @@ function SamoProizvod() {
                       </MDBBtn>
                     )}
                   </div>
+                  
+                  
+                  
+                  </>)
+                  
+                  :(<></>)}
+                  
+                  
                 </MDBCol>
 
               </MDBRow>

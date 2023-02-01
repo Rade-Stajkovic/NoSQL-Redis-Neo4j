@@ -37,7 +37,7 @@ namespace NBP_backend.Controllers
 
     
         [HttpPost]
-        [Route("CreateUser/{username}/{password}/{Name}/{SurName}")]
+        [Route("CreateUser/{username}/{password}/{Name}/{SurName}/{PhoneNumber}/{Location}")]
         public async Task<IActionResult> Create(String username, String password, String Name, String SurName, String PhoneNumber, String Location)
         {
             _userServices.CreateUser(username, password, Name, SurName, PhoneNumber, Location );

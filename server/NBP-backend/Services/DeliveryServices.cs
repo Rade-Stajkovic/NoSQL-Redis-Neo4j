@@ -146,12 +146,7 @@ namespace NBP_backend.Services
                 Console.WriteLine(e.StackTrace);
                 return null;
             }
-<<<<<<< HEAD
-        }
-       
-=======
         }     
 
->>>>>>> b5390d9de06f376f7618413711a73db6646d1992
     }
 }

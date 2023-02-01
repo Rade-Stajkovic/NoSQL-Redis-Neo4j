@@ -53,11 +53,11 @@ if(products) {
         
            <Carousel breakPoints={breakPoints} >
            {products.map((e,index) => {
-            return <Col className="p-1"><Card >
+            return <Col className="p-1" md='3'><Card >
               
               <MDBRow>
         
-           <MDBCol md="3" key={index}>
+           
              <MDBCard className="position-relative">
              <MDBCardImage
                 src="https://cegermarket.rs/wp-content/uploads/2020/06/ceger-market-banane.jpg"
@@ -85,7 +85,7 @@ if(products) {
                 </MDBRow>
               </MDBCardBody>
             </MDBCard>
-          </MDBCol>
+          
         
       </MDBRow>
               

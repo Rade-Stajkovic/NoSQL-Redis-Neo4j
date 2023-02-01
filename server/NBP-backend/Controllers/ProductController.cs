@@ -87,7 +87,7 @@ namespace NBP_backend.Controllers
                 IdProduct = p.ID,
                 NameProduct = p.Name,
                 PictureProduct = p.Picture,
-                Manufacturer = p.Manufacturer
+                Manufacturer = p.Manufacturer,
                 Reviews = p.Reviews,
                 Rank = rew ? (int)((p.GoodReviews / p.Reviews) * 100) : 0,
                 Stored = list

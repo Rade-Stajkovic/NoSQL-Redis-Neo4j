@@ -47,6 +47,9 @@ namespace NBP_backend.Services
             else return redisMarket;
         }
 
+
+        
+
         public List<Product> GetAllProducts(int IDMarket)
         {
             List<Product> products = new List<Product>();
@@ -65,6 +68,10 @@ namespace NBP_backend.Services
             }
             return products;
         }
+
+
+
+        
 
         public async void CreateMarket(String name)
         {
@@ -161,12 +168,12 @@ namespace NBP_backend.Services
         public async Task<bool> UnstoreProduct(int IDMarekt, int IDProduct)
         {
             IDictionary<string, object> dict = new Dictionary<string, object>();
-            dict.Add("ID", IDMarekt);
-            dict.Add("ID2", IDProduct);
+            dict.Add("ID", IDProduct);
+            dict.Add("ID2", IDMarekt);
             try
             {
                 await _client.Cypher.Match("(d:Product)-[v:STORED_IN]-(c:Market)")
-                                    .Where("id(d) = $ID2 AND id(c) = $ID")
+                                    .Where("id(d) = $ID AND id(c) = $ID2")
                                     .WithParams(dict)
                                     .Delete("v").ExecuteWithoutResultsAsync();
                 return true;

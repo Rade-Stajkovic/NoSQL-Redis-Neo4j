@@ -1,6 +1,7 @@
 
 
 import React from "react";
+import {useState} from "react";
 import { MDBListGroup, MDBListGroupItem } from 'mdb-react-ui-kit';
 import {
 
@@ -12,9 +13,40 @@ import {
 
 import './Notifikacije.css'
 
-function Notifikacije(props){
 
+function Notifikacije(props){
+  const[notifications, setNotifications]= useState("");
+  const[marketi, setMarketi]= useState("");
+  
     const { onClose } = props;
+    console.log(props);
+    console.log(props.returnID);
+
+    notifikacije();
+    async function notifikacije()
+    {
+
+
+
+    let result =  await fetch("https://localhost:44332/Notification/GetUserNotification/"+props.returnID,
+    {method: 'GET',
+    headers: {
+
+        "Content-type": "application/json;charset=UTF-8",
+
+    }});
+
+   
+    let data = await result.json();
+    console.log(data);
+    setNotifications(data.map(p => p.text));
+    setMarketi(data.map(p => p.market))
+    console.log(notifications);
+  }
+
+  console.log(notifications);
+   
+
               
     return (
         
@@ -25,9 +57,13 @@ function Notifikacije(props){
                     <MDBPopoverHeader color='light' >Notifikacije</MDBPopoverHeader>
                     <MDBPopoverBody color='secondary'>
                       <MDBListGroup>
-                        <MDBListGroupItem noBorders color='light' className='px-3 mb-2 rounded-3'>Limun voda snizena</MDBListGroupItem>
-                        <MDBListGroupItem noBorders color='light' className='px-3 mb-2 rounded-3'>Akcija akcija akcija</MDBListGroupItem>
-                        <MDBListGroupItem noBorders color='light' className='px-3 mb-2 rounded-3'>Ne propustite ovaj lud i nezaboravan popust! AKCIJA AKCIJA AKCIJA</MDBListGroupItem>
+                        {notifications ? notifications.map((notification,i) => (
+                    // <MDBDropdownItem key={category.tempID} >  <a href={`/kategorija/${category.name}/${category.tempID}`} style={{ color: '#393f81' }}>
+                    
+                    <MDBListGroupItem noBorders color='light' className='px-3 mb-2 rounded-3'  >
+                       <span style={{ fontWeight: 'bold' }}>{marketi[i]}:</span> {notification}
+                    </MDBListGroupItem>
+                  )) : <p>Zapratite proizvod da biste dobili obaveštenje kada su na akciji.</p>}
                       </MDBListGroup>
                     </MDBPopoverBody>
                   </MDBPopover>

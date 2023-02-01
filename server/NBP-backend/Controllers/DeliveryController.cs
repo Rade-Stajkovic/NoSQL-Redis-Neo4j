@@ -34,18 +34,17 @@ namespace NBP_backend.Controllers
 
         [HttpGet]
         [Route("LogIn/{name}/{password}")]
-        public IActionResult LogIn(String name, String password)
+        public async Task<IActionResult> LogIn(String name, String password)
         {
             try
             {
-                Task<int> res = _deliveryServices.LogInDelivery(name, password);
-                int res1 = res.Result;
-                if (res1 == -1)
+                string res = await _deliveryServices.LogInDelivery(name, password);
+            
+                if (res == null)
                 {
                     return BadRequest("Pogresna sifra");
                 }
-                else if (res1 == -2) return BadRequest("Korisnik ne postoji");
-                return Ok(res1);
+                return Ok(res);
             }
             catch (Exception e)
             {

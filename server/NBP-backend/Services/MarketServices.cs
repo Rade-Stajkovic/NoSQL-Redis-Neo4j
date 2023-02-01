@@ -121,7 +121,7 @@ namespace NBP_backend.Services
 
         }
 
-        public async Task<bool> ChangeRelAttributes(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable)
+        public async Task<bool> ChangeRelAttributes(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable, String message)
         {
             IDictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("ID", IDMarket);
@@ -139,10 +139,16 @@ namespace NBP_backend.Services
                                     .Set("v.price = $newPrice, v.sale = $newSale, v.available =  $newAvailable ")
                                     .WithParams(dict2).ExecuteWithoutResultsAsync();
 
+                var res = _client.Cypher.Match("(n:Market)")
+                                        .Where("id(n)="+ IDMarket.ToString())
+                                        .Return(n => n.As<Market>()).ResultsAsync.Result;
+
+                var market = res.FirstOrDefault();
+
                 Notification notification = new Notification();
                 notification.ProductID = IDProduct;
-                notification.Market = "Maxi";
-                notification.Text = "Banane na akciji";
+                notification.Market = market.Name;
+                notification.Text = message;
                 DateTime time = new DateTime();
                 
                 notification.Time = DateTime.Now;

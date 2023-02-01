@@ -19,12 +19,13 @@
     "react-router-dom": "^6.6.1",
     "react-scripts": "^4.0.3",
     "react-slick": "^0.29.0",
+    "react-toastify": "^9.1.1",
     "signalr": "^2.4.3",
     "v5": "^0.1.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "react-scripts  start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

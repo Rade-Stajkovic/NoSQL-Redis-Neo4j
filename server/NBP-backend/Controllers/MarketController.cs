@@ -77,12 +77,12 @@ namespace NBP_backend.Controllers
         }
 
         [HttpPut]
-        [Route("ChangeRelAttributes/{IDMarket}/{IDProduct}/{newPrice}/{newSale}/{newAvailable}")]
-        public IActionResult UnFollowProduct(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable)
+        [Route("ChangeRelAttributes/{IDMarket}/{IDProduct}/{newPrice}/{newSale}/{newAvailable}/{message}")]
+        public IActionResult UnFollowProduct(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable,String message)
         {
             try
             {
-                Task<bool> res = _marketServices.ChangeRelAttributes(IDMarket, IDProduct, newPrice, newSale, newAvailable);
+                Task<bool> res = _marketServices.ChangeRelAttributes(IDMarket, IDProduct, newPrice, newSale, newAvailable, message);
                 bool res1 = res.Result;
                 if (res1)
                 {

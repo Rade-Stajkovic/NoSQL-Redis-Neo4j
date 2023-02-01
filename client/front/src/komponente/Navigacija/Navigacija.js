@@ -6,6 +6,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Notifikacije from '../Notifikacije/Notifikacije';
 import './Navigacija.css'
+import * as signalR from "@microsoft/signalr";
+
+
+
 
 
 import {
@@ -41,7 +45,31 @@ const Navigacija = (props) =>
   const[delivery_info, setDeliveryinfo]=useState("");
   const user = JSON.parse(localStorage.getItem('user-info'));
   const del=localStorage.getItem('delivery-info');
+  const [message, setMessage] = useState('');
+  
  
+  if(user){
+  const connection = new signalR.HubConnectionBuilder()
+  .withUrl("https://localhost:44332/producthub")
+  .build();
+
+  console.log(user.userName);
+  
+  connection.on("ProductNotification", (productId) => {
+     
+   
+      let obj = JSON.parse(productId);
+      console.log(obj);
+      setMessage(obj);
+     
+    
+
+  });
+
+   connection.start();
+  }
+  
+
 
   console.log(user);
   useEffect(()=>{
@@ -106,12 +134,23 @@ const Navigacija = (props) =>
         localStorage.removeItem('delivery-info');
       window.location.reload();
     }
+    
+    
+    
+    
+    
+     
+    
+ 
 
   return (
+    
+
+       
 
     <MDBNavbar expand='lg' light bgColor='light'>
       <MDBContainer fluid>
-
+       
 
         { delivery_info ? (<><MDBNavbarBrand > {delivery_info}  </MDBNavbarBrand></>): (<> <MDBNavbarBrand href='#'><img src="https://cdn-icons-png.flaticon.com/512/2156/2156021.png" style={{ height: '30px', objectFit: 'cover' }} ></img></MDBNavbarBrand></>)}
          
@@ -194,9 +233,11 @@ const Navigacija = (props) =>
 
       {user_info ? (<> 
           
-          <div>   
+       
+
+          {/* <div>   
             {setNotifications && <Notifikacije {...user_info} onClose={() => setNotifications(false)}  />}
-          </div>
+          </div> */}
 
           <MDBNavbarItem>
             <MDBNavbarLink onClick={logout} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Odjavi se</MDBNavbarLink>
@@ -220,7 +261,7 @@ const Navigacija = (props) =>
           </>)
     }
 
-
+   
 
 
 
@@ -229,6 +270,8 @@ const Navigacija = (props) =>
         </MDBCollapse>
       </MDBContainer>
     </MDBNavbar>
+
+  
   );
 }
 export default Navigacija;

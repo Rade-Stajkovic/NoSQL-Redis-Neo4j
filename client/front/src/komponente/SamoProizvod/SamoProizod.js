@@ -67,7 +67,7 @@ function SamoProizvod() {
     setFollowing(true);
     localStorage.setItem(`following-${IdProduct}`, true);
     try {
-      const response = await axios.put(`https://localhost:5001/User/FollowProduct/${IDUser}/${IdProduct}`);
+      const response = await axios.put(`https://localhost:44332/User/FollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
       alert(`Uspesno ste zapratili -${product.nameProduct}`);
     } catch (error) {
@@ -79,7 +79,7 @@ function SamoProizvod() {
     setFollowing(false);
     localStorage.removeItem(`following-${IdProduct}`);
     try {
-      const response = await axios.delete(`https://localhost:5001/User/UnFollowProduct/${IDUser}/${IdProduct}`);
+      const response = await axios.delete(`https://localhost:44332/User/UnFollowProduct/${IDUser}/${IdProduct}`);
       console.log(response.data);
       alert("Uspeno ste odpratili proizovd");
     } catch (error) {
@@ -118,7 +118,7 @@ function SamoProizvod() {
                     className="bg-image rounded hover-zoom hover-overlay"
                   >
                     <MDBCardImage
-                      src={"https://localhost:5001/PicturesProduct/" + product.pictureProduct}
+                      src={"https://localhost:44332/PicturesProduct/" + product.pictureProduct}
                       fluid
                       className="w-100"
                     />

@@ -26,7 +26,7 @@ function Kategorija() {
  
 
   useEffect(() => {
-    axios.put(`https://localhost:5001/GetAllProducts/${IDCat}`)
+    axios.put(`https://localhost:44332/GetAllProducts/${IDCat}`)
       .then(res => {
         setProducts(res.data);
       })
@@ -47,7 +47,7 @@ function Kategorija() {
               <MDBCol md="4" key={index}>
                 <MDBCard  className="position-relative" >
                   <MDBCardImage
-                    src={"https://localhost:5001/PicturesProduct/" + e.picture}
+                    src={"https://localhost:44332/PicturesProduct/" + e.picture}
                     fluid
                     className="w-100"
                     alt={e.name}

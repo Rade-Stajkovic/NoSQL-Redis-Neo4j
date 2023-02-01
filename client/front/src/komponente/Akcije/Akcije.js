@@ -26,7 +26,7 @@ function Akcije() {
  
 
   useEffect(() => {
-    axios.get(`https://localhost:5001/GetAllProductsOnSale/${IDMarket}`)
+    axios.get(`https://localhost:44332/GetAllProductsOnSale/${IDMarket}`)
       .then(res => {
         setProducts(res.data);
       })
@@ -47,7 +47,7 @@ function Akcije() {
               <MDBCol md="4" key={index}>
                 <MDBCard  className="position-relative m-3" >
                   <MDBCardImage
-                    src={"https://localhost:5001/PicturesProduct/" + e.picture}
+                    src={"https://localhost:44332/PicturesProduct/" + e.picture}
                     fluid
                     className="w-100"
                     alt={e.name}

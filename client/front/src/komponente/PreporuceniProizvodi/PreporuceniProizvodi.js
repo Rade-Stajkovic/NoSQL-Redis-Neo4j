@@ -60,7 +60,7 @@ const [products, setProducts] = useState([]);
                 <div className="text-center">
                 <a href={`/proizvod/${e.id}`}>
                     <MDBBtn outline color="primary" size="sm" className="mt-2">
-                        OPSIRNIJE
+                        OPŠIRNIJE
                     </MDBBtn>
                     </a>
                 </div>

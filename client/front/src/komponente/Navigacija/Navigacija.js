@@ -81,7 +81,7 @@ const Navigacija = (props) =>
       setDeliveryinfo(del);
 
 
-    axios.get("https://localhost:5001/GetAllCategories")
+    axios.get("https://localhost:44332/GetAllCategories")
     .then(res => {
       //console.log(res)
       setCategories(res.data)
@@ -90,7 +90,7 @@ const Navigacija = (props) =>
       console.log(err)
     })
 
-    axios.get("https://localhost:5001/GetAllMarkets")
+    axios.get("https://localhost:44332/GetAllMarkets")
     .then(res => {
       //console.log(res)
       setMarkets(res.data)

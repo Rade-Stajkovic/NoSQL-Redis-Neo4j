@@ -100,7 +100,8 @@ const Navigacija = (props) =>
   function logout()
     {
       if(localStorage.getItem('user-info')) 
-        localStorage.removeItem('user-info');
+       // localStorage.removeItem('user-info');
+       localStorage.clear();
       //history.push("/");
       else 
         localStorage.removeItem('delivery-info');

@@ -149,8 +149,16 @@ namespace NBP_backend.Services
 
         }
        
+<<<<<<< HEAD
 
       }     
 
+=======
+
+        }     
+
+
+    
+>>>>>>> 98b1e3a2a9d1a604e11f2a55f0c0dc702d3e4da3
 }
 

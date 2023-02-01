@@ -24,7 +24,7 @@ namespace NBP_backend.Controllers
 
         public async Task<IActionResult> GetAll()
         {
-            return Ok(_marketServices.GetAll());
+            return Ok(await _marketServices.GetAll());
         }
 
 
@@ -33,7 +33,7 @@ namespace NBP_backend.Controllers
 
         public async Task<IActionResult> GetAll(int idMarket)
         {
-            return Ok(_marketServices.GetAllProducts(idMarket));
+            return Ok( _marketServices.GetAllProducts(idMarket));
         }
 
 

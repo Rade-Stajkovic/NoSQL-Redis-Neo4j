@@ -65,12 +65,12 @@ namespace NBP_backend.Services
             var redis = _cacheProvider.GetAllFromHashSet<ProductSerializationRedis>("Product_Redis_" + idProduct).FirstOrDefault();
             if (redis != null)
             {
-                redis.Reviews = +1;
+                redis.Reviews += 1;
                 if (recommend)
                 {
-                    redis.GoodReviews = +1;
+                    redis.GoodReviews += 1;
                 }
-                redis.Rank = (int)redis.GoodReviews / redis.Reviews * 100;
+                redis.Rank = (int)(((double)redis.GoodReviews / redis.Reviews )* 100);
             }
             _cacheProvider.SetInHashSet("Product_Redis_" + idProduct, idProduct.ToString(), JsonSerializer.Serialize(redis));
         }
@@ -109,6 +109,22 @@ namespace NBP_backend.Services
                                  .ExecuteWithoutResultsAsync();
 
         }
+
+        public List<Review> GetReview(int ID)
+        {
+            var results = _client.Cypher
+            .Match("(r:Review)-[:REVIEWED]->(n:Product)")
+            .Where("id(n)=$id")
+            .WithParam("id", ID)
+            .Return(r => r.As<Review>())
+            .ResultsAsync.Result; var reviews = results.ToList();
+            List<Review> list = new List<Review>(); foreach (var rev in reviews)
+            {
+                list.Add(rev);
+            }
+            return list;
+        }
+
     }
 }
 

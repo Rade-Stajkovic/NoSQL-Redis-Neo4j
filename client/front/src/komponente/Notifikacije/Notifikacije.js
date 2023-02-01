@@ -19,10 +19,10 @@ function Notifikacije(props){
   const[marketi, setMarketi]= useState("");
   
     const { onClose } = props;
-    console.log(props);
-    console.log(props.returnID);
+    // console.log(props);
+    // console.log(props.returnID);
 
-    notifikacije();
+    //notifikacije();
     async function notifikacije()
     {
 
@@ -63,7 +63,7 @@ function Notifikacije(props){
                     <MDBListGroupItem noBorders color='light' className='px-3 mb-2 rounded-3'  >
                        <span style={{ fontWeight: 'bold' }}>{marketi[i]}:</span> {notification}
                     </MDBListGroupItem>
-                  )) : <p>Zapratite proizvod da biste dobili obaveštenje kada su na akciji.</p>}
+                  )) : <p>Zapratite proizvod da biste dobili obaveštenja kada su na akciji.</p>}
                       </MDBListGroup>
                     </MDBPopoverBody>
                   </MDBPopover>

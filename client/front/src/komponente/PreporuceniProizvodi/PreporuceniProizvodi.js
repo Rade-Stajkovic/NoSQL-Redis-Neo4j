@@ -1,5 +1,7 @@
+
 import React from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Col,  Card } from "react-bootstrap";
 
 import {
   MDBContainer,
@@ -14,26 +16,25 @@ import {
   MDBRipple,
   MDBBtn,
 } from "mdb-react-ui-kit";
-
-
-
 import axios from "axios";
-import { useParams } from 'react-router-dom';
 
-function Kategorija() {
-  const { IDCat } = useParams();
-  const [products, setProducts] = useState([]);
+
+
+function PreporuceniProizvodi() {
+
+
+const [products, setProducts] = useState([]);
  
 
   useEffect(() => {
-    axios.put(`https://localhost:44332/GetAllProducts/${IDCat}`)
+    axios.get(`https://localhost:44332/User/GetRecommendedByUsers`)
       .then(res => {
         setProducts(res.data);
       })
       .catch(err => {
         console.log(err);
       });
-  }, [IDCat]);
+  }, []);
 
   console.log(products)
   return (
@@ -59,7 +60,7 @@ function Kategorija() {
                 <div className="text-center">
                 <a href={`/proizvod/${e.id}`}>
                     <MDBBtn outline color="primary" size="sm" className="mt-2">
-                        OPSIRNIJE
+                        OPŠIRNIJE
                     </MDBBtn>
                     </a>
                 </div>
@@ -76,7 +77,5 @@ function Kategorija() {
 
     </div>
   );
-}
-
-
-export default Kategorija;
+} 
+export default PreporuceniProizvodi;

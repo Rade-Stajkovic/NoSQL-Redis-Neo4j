@@ -25,7 +25,7 @@ namespace NBP_backend.Controllers
 
         public async Task<IActionResult> GetAll()
         {
-            return Ok(_categoryServices.GetAll());
+            return Ok(await _categoryServices.GetAll());
         }
 
 
@@ -79,12 +79,12 @@ namespace NBP_backend.Controllers
 
         [HttpPut]
         [Route("GetAllProducts/{IDCat}")]
-        public IActionResult GetAll(int IDCat)
+        public async Task<ActionResult> GetAll(int IDCat)
         {
             try
 
             {
-                List<Product> prod = _categoryServices.GetAllProduct(IDCat);
+                List<Product> prod = await _categoryServices.GetAllProduct(IDCat);
                 return Ok(prod);
             }
             catch (Exception e)

@@ -33,6 +33,7 @@ import {
   MDBPopoverHeader,
  
 } from 'mdb-react-ui-kit';
+import { Button } from 'react-bootstrap';
 
 const Navigacija = (props) =>
 {
@@ -43,6 +44,8 @@ const Navigacija = (props) =>
   const [markets, setMarkets] = useState();
   const[user_info, setUserinfo]=useState("");
   const[delivery_info, setDeliveryinfo]=useState("");
+  const[search, setSearch] = useState("");
+  const[param, setparam] = useState("")
   const user = JSON.parse(localStorage.getItem('user-info'));
   const del=localStorage.getItem('delivery-info');
   const [message, setMessage] = useState('');
@@ -71,6 +74,27 @@ const Navigacija = (props) =>
   
 
 
+  async function searchh()
+  {
+    let search = await fetch("https://localhost:44332/Product/SearchProducts/"+param ,
+    {
+      method: 'GET',
+        headers: {
+
+            "Content-type": "application/json;charset=UTF-8",
+
+        }
+    } ).then(Response=>{
+      return Response.json();
+    }).then((data)=>{
+      const pro ={
+        ...data[0],
+      }
+      console.log(pro);
+      setSearch(pro);
+    });
+  }
+
   console.log(user);
   useEffect(()=>{
    
@@ -79,7 +103,7 @@ const Navigacija = (props) =>
     if (user!=null)
      setUserinfo(user);
     // console.log(user_info);
-    console.log(del);
+    //console.log(del);
 
     if (del!=null)
       setDeliveryinfo(del);
@@ -87,7 +111,7 @@ const Navigacija = (props) =>
 
     axios.get("https://localhost:44332/GetAllCategories")
     .then(res => {
-      console.log(res)
+      //console.log(res)
       setCategories(res.data)
     })
     .catch(err => {
@@ -96,17 +120,18 @@ const Navigacija = (props) =>
 
     axios.get("https://localhost:44332/GetAllMarkets")
     .then(res => {
-      console.log(res)
+      //console.log(res)
       setMarkets(res.data)
     })
     .catch(err => {
       console.log(err)
     })
-  },[])
+
+    
+  },[]
+  )
   
-  console.log(categories)
-  console.log(user_info);
-  console.log(markets);
+  
   function notificationsShow()
   {
     setNotifications(true);
@@ -128,11 +153,13 @@ const Navigacija = (props) =>
   function logout()
     {
       if(localStorage.getItem('user-info')) 
-        localStorage.removeItem('user-info');
+       // localStorage.removeItem('user-info');
+       localStorage.clear();
       //history.push("/");
       else 
         localStorage.removeItem('delivery-info');
-      window.location.reload();
+      //window.location.reload();
+      window.location.href='/';
     }
     
     
@@ -148,11 +175,11 @@ const Navigacija = (props) =>
 
        
 
-    <MDBNavbar expand='lg' light bgColor='light'>
+    <MDBNavbar expand='lg'  bgColor='light'>
       <MDBContainer fluid>
        
 
-        { delivery_info ? (<><MDBNavbarBrand > {delivery_info}  </MDBNavbarBrand></>): (<> <MDBNavbarBrand href='#'><img src="https://cdn-icons-png.flaticon.com/512/2156/2156021.png" style={{ height: '30px', objectFit: 'cover' }} ></img></MDBNavbarBrand></>)}
+        { delivery_info ? (<><MDBNavbarBrand > {delivery_info}  </MDBNavbarBrand></>): (<> <MDBNavbarBrand ><img src="https://cdn-icons-png.flaticon.com/512/2156/2156021.png" style={{ height: '30px', objectFit: 'cover' }} ></img></MDBNavbarBrand></>)}
          
 
         <MDBNavbarToggler
@@ -165,10 +192,17 @@ const Navigacija = (props) =>
           <MDBIcon icon='bars' fas />
         </MDBNavbarToggler>
 
+
+        
         <MDBCollapse navbar >
-          <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
-            <MDBNavbarItem>
-              <MDBNavbarLink active aria-current='page' href='#'>
+        <MDBNavbarNav className='mr-auto mb-2 mb-lg-0'>
+
+
+        {delivery_info ? (<>
+          </>)
+          : (<>
+          <MDBNavbarItem>
+              <MDBNavbarLink active aria-current='page' href='/'>
                 Početna
               </MDBNavbarLink>
             </MDBNavbarItem>
@@ -204,19 +238,22 @@ const Navigacija = (props) =>
                   )) : <p>Loading...</p>}
                 </MDBDropdownMenu>
               </MDBDropdown>
-            </MDBNavbarItem>
+            </MDBNavbarItem></>)}
+          
+            
 
 
           </MDBNavbarNav>
 
           
           
-          
+          {delivery_info ? (<></>):
+          (<><form className='d-flex input-group w-auto'>
+            <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' onChange={(e)=>{setparam(e.target.value)}} />
+            <Button color='primary'><MDBIcon fas icon="search" onClick={searchh} /></Button>
+          </form></>)}
 
-          <form className='d-flex input-group w-auto'>
-            <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' />
-            <MDBBtn color='primary'><MDBIcon fas icon="search" /></MDBBtn>
-          </form>
+          
 
           
 
@@ -239,20 +276,15 @@ const Navigacija = (props) =>
             {setNotifications && <Notifikacije {...user_info} onClose={() => setNotifications(false)}  />}
           </div> */}
 
-          <MDBNavbarItem>
-            <MDBNavbarLink onClick={logout} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Odjavi se</MDBNavbarLink>
-          </MDBNavbarItem>
+         
         </>  ) : (<>
           </>)
       }
 
           
-    {user_info || delivery_info ? (<> 
-    
-
-          <MDBNavbarItem>
+    {user_info || delivery_info ? (<>        
             <MDBNavbarLink onClick={logout} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Odjavi se</MDBNavbarLink>
-          </MDBNavbarItem>
+       
         </>  ) : (<>
         
             <MDBNavbarLink onClick={loginshow} eventkey={2} style={{ whiteSpace: 'nowrap' }}>Prijavi se</MDBNavbarLink>

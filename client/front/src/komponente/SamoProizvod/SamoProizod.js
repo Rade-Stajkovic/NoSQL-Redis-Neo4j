@@ -1,6 +1,8 @@
 import React from "react";
+
 import Narudzbina from "../Narudzbina/Narudzbina";
 import Recenzija from "../Recenzija/Recenzija";
+import Komentari from "../Komentari/Komentari";
 import {
   MDBContainer,
   MDBRow,
@@ -28,8 +30,10 @@ function SamoProizvod() {
   const [loading, setLoading] = useState(true);
 
   const [following, setFollowing] = useState(localStorage.getItem(`following-${IdProduct}`) || false);
+  const [user_info,setUserinfo]=useState(JSON.parse(localStorage.getItem('user-info')));
 
   const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -44,6 +48,14 @@ function SamoProizvod() {
   function orderhide() {
     setOrder(false);
   }
+
+  const handleOpenModal2 = () => {
+    setShowModal2(true);
+  };
+
+  const handleCloseModal2= () => {
+    setShowModal2(false);
+  };
 
   let test = localStorage.getItem('user-info');
   let IDUser = null;
@@ -107,7 +119,7 @@ function SamoProizvod() {
                     className="bg-image rounded hover-zoom hover-overlay"
                   >
                     <MDBCardImage
-                      src="https://cegermarket.rs/wp-content/uploads/2020/06/ceger-market-banane.jpg"
+                      src={"https://localhost:44332/PicturesProduct/" + product.pictureProduct}
                       fluid
                       className="w-100"
                     />
@@ -133,20 +145,32 @@ function SamoProizvod() {
                   </div>
 
                   <div className="mb-2 text-muted small">
-                    <span>Rewiews</span>
+                    <span>Reviews</span>
                     <span className="text-primary"> • </span>
-                    <span>{product.reviews}</span>
+                    <span>  {product.reviews}</span>
                     <span className="text-primary"> • </span>
-                    <span>
-                      {product.rank}
-                      <br />
-                    </span>
+                      <span style={{ color: product.rank >= 50 ? 'green' : 'inherit' }}>
+                        {product.rank} %
+                        {product.rank >= 50 && <span> !!! PREPORUČUJEMO PROIZVOD !!!</span>}
+                      </span>
+                  </div>
+
+
 
                     <div>
-                      <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
-                      <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
-                    </div>
-                    </div>
+                    <MDBBtn color="primary" size="sm" onClick={handleOpenModal2}>Prikazi Recenzije</MDBBtn>
+                    <Komentari show={showModal2} onHide={handleCloseModal2} nameProduct={product.nameProduct} idProduct={product.idProduct} />
+                  </div>
+                 
+
+                  {user_info ? (<> <div>
+                    <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
+                    <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
+                  </div></>):
+                  (<></>)}
+              
+                  
+
                 </MDBCol>
 
 
@@ -163,7 +187,12 @@ function SamoProizvod() {
                       </div>
                     ))}
                   </div>
-                  <div className="d-flex flex-column mt-4">
+
+
+
+
+                  {user_info ? (<>
+                    <div className="d-flex flex-column mt-4">
                     <MDBBtn color="primary" size="sm" onClick={ordershow}> NARUCI</MDBBtn></div>
                   <Narudzbina show={order} onHide={orderhide} nameProduct={product.nameProduct} marketData={product.stored}></Narudzbina>
                   <div className="d-flex flex-column mt-4">
@@ -177,6 +206,14 @@ function SamoProizvod() {
                       </MDBBtn>
                     )}
                   </div>
+                  
+                  
+                  
+                  </>)
+                  
+                  :(<></>)}
+                  
+                  
                 </MDBCol>
 
               </MDBRow>

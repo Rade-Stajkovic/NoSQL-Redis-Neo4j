@@ -20,20 +20,20 @@ import {
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 
-function Kategorija() {
-  const { IDCat } = useParams();
+function Akcije() {
+  const { IDMarket } = useParams();
   const [products, setProducts] = useState([]);
  
 
   useEffect(() => {
-    axios.put(`https://localhost:44332/GetAllProducts/${IDCat}`)
+    axios.get(`https://localhost:44332/GetAllProductsOnSale/${IDMarket}`)
       .then(res => {
         setProducts(res.data);
       })
       .catch(err => {
         console.log(err);
       });
-  }, [IDCat]);
+  }, [IDMarket]);
 
   console.log(products)
   return (
@@ -45,7 +45,7 @@ function Kategorija() {
           {products.map((e, index) => {
             return (
               <MDBCol md="4" key={index}>
-                <MDBCard  className="position-relative" >
+                <MDBCard  className="position-relative m-3" >
                   <MDBCardImage
                     src={"https://localhost:44332/PicturesProduct/" + e.picture}
                     fluid
@@ -59,7 +59,7 @@ function Kategorija() {
                 <div className="text-center">
                 <a href={`/proizvod/${e.id}`}>
                     <MDBBtn outline color="primary" size="sm" className="mt-2">
-                        OPSIRNIJE
+                        OPŠIRNIJE
                     </MDBBtn>
                     </a>
                 </div>
@@ -79,4 +79,4 @@ function Kategorija() {
 }
 
 
-export default Kategorija;
+export default Akcije;

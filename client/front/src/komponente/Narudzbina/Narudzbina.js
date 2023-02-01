@@ -1,4 +1,5 @@
 import React from 'react';
+import './Narudzbina.css';
 import { Modal, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
 import { useState, useEffect } from "react";
@@ -93,7 +94,9 @@ const Narudzbina = (props) => {
                     <Form.Control as="select" value={selectedMarket ? selectedMarket.market : ""} onChange={handleSelectChange}>
                         <option value="">Izaberite market</option>
                         {marketData.map((market, index) => (
-                            <option key={index} value={market.market}>{market.market} - cena : {market.price} din</option>
+                           <option key={index} value={market.market} disabled={!market.available}  className={market.sale ? 'sale' : ''}>
+                           {market.market} - cena : {market.price} din  {market.sale ? 'AKCIJSKA CENA' : ''} {!market.available ? "(Trenutno nema na stanju u ovom marketu)" : ""}
+                       </option>
                         ))}
                     </Form.Control>
                 </Form.Group>

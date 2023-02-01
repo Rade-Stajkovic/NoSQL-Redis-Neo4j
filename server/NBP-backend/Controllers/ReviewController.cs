@@ -40,6 +40,13 @@ namespace NBP_backend.Controllers
             _reviewServices.DeleteReviewPoduct(idReview);
             return Ok("Uspelo");
         }
+        [HttpGet]
+        [Route("GetReview/{ID}")]
+        public async Task<IActionResult> GetReview(int ID)
+        {
+            var review = _reviewServices.GetReview(ID);
+            return Ok(review);
+        }
 
     }
 }

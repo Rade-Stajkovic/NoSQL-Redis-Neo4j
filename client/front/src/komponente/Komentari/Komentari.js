@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './Komentari.css';
 import { Modal, Form, FormControl, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import { MDBBtn } from 'mdb-react-ui-kit';
 import { MDBIcon } from 'mdb-react-ui-kit';

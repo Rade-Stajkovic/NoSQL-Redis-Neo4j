@@ -29,6 +29,7 @@ import {
   MDBPopoverHeader,
  
 } from 'mdb-react-ui-kit';
+import { Button } from 'react-bootstrap';
 
 const Navigacija = (props) =>
 {
@@ -39,9 +40,32 @@ const Navigacija = (props) =>
   const [markets, setMarkets] = useState();
   const[user_info, setUserinfo]=useState("");
   const[delivery_info, setDeliveryinfo]=useState("");
+  const[search, setSearch] = useState("");
+  const[param, setparam] = useState("")
   const user = JSON.parse(localStorage.getItem('user-info'));
   const del=localStorage.getItem('delivery-info');
  
+
+  async function searchh(param)
+  {
+    let search = await fetch("https://localhost:44332/Product/SearchProducts/"+param ,
+    {
+      method: 'GET',
+        headers: {
+
+            "Content-type": "application/json;charset=UTF-8",
+
+        }
+    } ).then(Response=>{
+      return Response.json();
+    }).then((data)=>{
+      const pro ={
+        ...data[0],
+      }
+      console.log(pro);
+      setSearch(pro);
+    });
+  }
 
   console.log(user);
   useEffect(()=>{
@@ -76,9 +100,9 @@ const Navigacija = (props) =>
     })
   },[])
   
-  console.log(categories)
-  console.log(user_info);
-  console.log(markets);
+  //console.log(categories)
+  //console.log(user_info);
+  //console.log(markets);
   function notificationsShow()
   {
     setNotifications(true);
@@ -175,8 +199,8 @@ const Navigacija = (props) =>
           
 
           <form className='d-flex input-group w-auto'>
-            <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' />
-            <MDBBtn color='primary'><MDBIcon fas icon="search" /></MDBBtn>
+            <input type='search' className='form-control' placeholder='Pretraži' aria-label='Search' onChange={(e)=>{setparam(e.target.value)}} />
+            <Button color='primary'><MDBIcon fas icon="search" onClick={searchh} /></Button>
           </form>
 
           

@@ -107,7 +107,7 @@ function SamoProizvod() {
                     className="bg-image rounded hover-zoom hover-overlay"
                   >
                     <MDBCardImage
-                      src="https://cegermarket.rs/wp-content/uploads/2020/06/ceger-market-banane.jpg"
+                      src={"https://localhost:44332/PicturesProduct/" + product.pictureProduct}
                       fluid
                       className="w-100"
                     />

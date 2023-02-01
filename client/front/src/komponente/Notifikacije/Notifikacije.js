@@ -43,6 +43,7 @@ function Notifikacije(props){
     setMarketi(data.map(p => p.market))
     console.log(notifications);
   }
+  notifikacije();
 
   console.log(notifications);
    
@@ -67,6 +68,7 @@ function Notifikacije(props){
                       </MDBListGroup>
                     </MDBPopoverBody>
                   </MDBPopover>
+                  
 
     );   
 }

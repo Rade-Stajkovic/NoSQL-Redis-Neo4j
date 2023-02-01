@@ -77,7 +77,7 @@ namespace NBP_backend.Services
                     await _client.Cypher.Match("(d:Delivery), (o:Order)")
                                 .Where("d.Name = $Name AND o.ProductName = $ProductName")
                                 .WithParams(dict)
-                                .Create("(o)-[:DELIVERED]->(d)")
+                                .Create("(o)-[:TO_DELIVER]->(d)")
                                 .ExecuteWithoutResultsAsync();
 
                     var redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379");

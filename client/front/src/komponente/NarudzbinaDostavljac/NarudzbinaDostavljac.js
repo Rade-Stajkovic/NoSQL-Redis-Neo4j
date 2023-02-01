@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import *  as signalR from '@microsoft/signalr';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import {
   MDBCard,
   MDBCardBody,
@@ -16,6 +18,21 @@ import {
 
 function NarudzbinaDostavljac()
 {
+    const[message , setMessage] =useState(false);
+    let messages =[];
+          let deliver = localStorage.getItem("delivery-info");
+          console.log(deliver);
+          const connection = new signalR.HubConnectionBuilder()
+          .withUrl("https://localhost:44332/producthub")
+          .build();
+          
+          connection.on("DeliveryNotification" +deliver , (productId) => {
+                let obj = JSON.parse(productId);
+                console.log(obj);
+                setMessage(obj);
+                messages.push(obj);
+                });
+          connection.start();
 
     const data = [
         {
@@ -39,43 +56,39 @@ function NarudzbinaDostavljac()
       ];
 
 
-      return (
+      return ( <div>{message ? (<><div><MDBRow>
+        { 
+          <MDBCol >
+            <MDBCard className='text-center mb-3'>
+                 <MDBCardHeader><MDBCardTitle style={{ fontSize: '25px' }}>Market: {message.MarketName}</MDBCardTitle></MDBCardHeader>
+                 <MDBCardBody>
+                   {/* <MDBCardTitle>Proizvod: {nar.Proizvod}</MDBCardTitle>
+                   <MDBCardTitle>Količina: {nar.Kolicina}</MDBCardTitle>
+                   <MDBCardTitle>Cena: {nar.Cena}</MDBCardTitle>
+                  <MDBCardTitle>Adresa: {nar.Adresa}</MDBCardTitle>
+                   <MDBCardTitle>Ime: {nar.ImeMusterije}</MDBCardTitle>
+                   <MDBCardTitle>BrojTelefona: {nar.BrojTelefona}</MDBCardTitle> */}
+      
+                   <p style={{ margin: 0 }}><b>Proizvod:</b> {message.ProductName}</p>
+                   <p style={{ margin: 0 }}><b> Količina:</b> {message.Quantity}</p>
+                   <p style={{ margin: 0 }}><b> Cena:</b> {message.Price}</p>
+                   <p style={{ margin: 0 }}><b>Adresa:</b> {message.Location}</p>
+                   <p style={{ margin: 0 }}><b>Ime: </b>{message.UserName}</p>
+                   <p style={{ margin: 0 }}><b>Broj:</b> {message.PhoneNumber}</p>
+                  
+                 </MDBCardBody>
+                 <MDBCardFooter className='text-muted'></MDBCardFooter>
+               </MDBCard>
+          </MDBCol>
+        }
+      </MDBRow></div></>):(<><div>Cekamo Narudzbine</div></>)} </div>
 
-
-        <MDBRow>
-  {data.map(nar => (
-    <MDBCol md='4'>
-      <MDBCard className='text-center mb-3'>
-           <MDBCardHeader><MDBCardTitle style={{ fontSize: '25px' }}>Market {nar.Market}</MDBCardTitle></MDBCardHeader>
-           <MDBCardBody>
-             {/* <MDBCardTitle>Proizvod: {nar.Proizvod}</MDBCardTitle>
-             <MDBCardTitle>Količina: {nar.Kolicina}</MDBCardTitle>
-             <MDBCardTitle>Cena: {nar.Cena}</MDBCardTitle>
-            <MDBCardTitle>Adresa: {nar.Adresa}</MDBCardTitle>
-             <MDBCardTitle>Ime: {nar.ImeMusterije}</MDBCardTitle>
-             <MDBCardTitle>BrojTelefona: {nar.BrojTelefona}</MDBCardTitle> */}
-
-             <p style={{ margin: 0 }}><b>Proizvod:</b> {nar.Proizvod}</p>
-             <p style={{ margin: 0 }}><b> Količina:</b> {nar.Kolicina}</p>
-             <p style={{ margin: 0 }}><b> Cena:</b> {nar.Cena}</p>
-             <p style={{ margin: 0 }}><b>Adresa:</b> {nar.Adresa}</p>
-             <p style={{ margin: 0 }}><b>Ime: </b>{nar.ImeMusterije}</p>
-             <p style={{ margin: 0 }}><b>Broj:</b> {nar.BrojTelefona}</p>
-            
-             <MDBBtn href='#' className='m-3'>DOSTAVLJENO</MDBBtn>
-           <MDBCardText className='text-muted'>Kliknite ukoliko ste izvršili dostavu.</MDBCardText>
-           </MDBCardBody>
-           <MDBCardFooter className='text-muted'></MDBCardFooter>
-         </MDBCard>
-    </MDBCol>
-  ))}
-</MDBRow>
 
           
            );
      
            
      
-     }
+}
      export default NarudzbinaDostavljac;
 

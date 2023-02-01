@@ -107,7 +107,7 @@ namespace NBP_backend.Services
             }
         }
 
- public async Task<string> LogInDelivery(String name, String password)
+        public async Task<string> LogInDelivery(String name, String password)
         {
             try
             {
@@ -149,8 +149,14 @@ namespace NBP_backend.Services
 
         }
        
-
-        }     
+        public async Task<List<OrderProduct>> GetAllOrders(string name)
+        {
+            var res = await _client.Cypher.Match("(o:Order) - [t:TO_DELIVER] - (d:Delivery)")
+                                            .Where("d.Name = " + name)
+                                            .Return(d => d.As<OrderProduct>()).ResultsAsync;
+            return res.ToList();
+        }
+    }     
 
 
     

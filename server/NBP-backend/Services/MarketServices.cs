@@ -121,7 +121,7 @@ namespace NBP_backend.Services
 
         }
 
-        public async Task<bool> ChangeRelAttributes(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable)
+        public async Task<bool> ChangeRelAttributes(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable, string message)
         {
             IDictionary<string, object> dict = new Dictionary<string, object>();
             dict.Add("ID", IDMarket);
@@ -137,18 +137,21 @@ namespace NBP_backend.Services
                                     .Where("id(d) = $ID2 AND id(c) = $ID")
                                     .WithParams(dict)
                                     .Set("v.price = $newPrice, v.sale = $newSale, v.available =  $newAvailable ")
+
+
+
                                     .WithParams(dict2).ExecuteWithoutResultsAsync();
 
-                Notification notification = new Notification();
-                notification.ProductID = IDProduct;
-                notification.Market = "Maxi";
-                notification.Text = "Banane na akciji";
-                DateTime time = new DateTime();
-                
-                notification.Time = DateTime.Now;
-                var redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379");
 
-                ISubscriber pub = redisPubSub.GetSubscriber();
+                var res = _client.Cypher.Match("(n:Market)")
+                                .Where("id(n)=" + IDMarket.ToString())
+                                .Return(n => n.As<Market>()).ResultsAsync.Result; var market = res.FirstOrDefault(); Notification notification = new Notification();
+                notification.ProductID = IDProduct;
+                notification.Market = market.Name;
+                notification.Text = message;
+                DateTime time = new DateTime();
+                notification.Time = DateTime.Now;
+                var redisPubSub = ConnectionMultiplexer.Connect("127.0.0.1:6379"); ISubscriber pub = redisPubSub.GetSubscriber();
                 pub.Publish(IDProduct.ToString(), JsonSerializer.Serialize(notification));
 
                 NotificationServices ns = new NotificationServices(_client);

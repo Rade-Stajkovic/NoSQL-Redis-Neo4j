@@ -8,9 +8,6 @@ import Pocetna from './Pocetna'
 import SamoProizvod from './komponente/SamoProizvod/SamoProizod';
 import Dostavljac from './Dostavljac';
 import Pretraga from './komponente/Pretraga';
-import {useRef} from 'react';
-import *  as signalR from '@microsoft/signalr';
-import { MDBBtn, MDBAlert } from 'mdb-react-ui-kit';
 
 function Rute ()
 {
@@ -54,6 +51,7 @@ function Rute ()
             <Route path='/proizvod/:IdProduct' element={< SamoProizvod />} />
             <Route path='dostava' element={<Dostavljac/>} />
             <Route path='/pretraga' element = {<Pretraga/>} />
+            <Route path='/market/:name/:IDMarket' element={<Akcije/>} />
         </Routes>
         </BrowserRouter>
         </div>

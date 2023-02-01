@@ -149,15 +149,15 @@ namespace NBP_backend.Services
 
         }
        
-        public async Task<List<OrderProduct>> GetAllOrders(string name)
-        {
-            var res = await _client.Cypher.Match("(o:Order) - [t:TO_DELIVER] - (d:Delivery)")
-                                            .Where("d.Name = " + name)
-                                            .Return(d => d.As<OrderProduct>()).ResultsAsync;
-            return res.ToList();
-        }
-    }     
+
+        }     
+
+=======
+
+        }     
 
 
     
+>>>>>>> 98b1e3a2a9d1a604e11f2a55f0c0dc702d3e4da3
 }
+

@@ -77,8 +77,8 @@ namespace NBP_backend.Controllers
         }
 
         [HttpPut]
-        [Route("ChangeRelAttributes/{IDMarket}/{IDProduct}/{newPrice}/{newSale}/{newAvailable}/{message}")]
-        public IActionResult ChangeRelAttributes(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable, string message)
+        [Route("ChangeRelAttributes/{IDMarket}/{IDProduct}/{newPrice}/{newSale}/{newAvailable}")]
+        public IActionResult UnFollowProduct(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable)
         {
             try
             {

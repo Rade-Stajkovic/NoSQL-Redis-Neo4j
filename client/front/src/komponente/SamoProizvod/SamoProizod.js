@@ -133,20 +133,20 @@ function SamoProizvod() {
                   </div>
 
                   <div className="mb-2 text-muted small">
-                    <span>Rewiews</span>
-                    <span className="text-primary"> • </span>
-                    <span>{product.reviews}</span>
-                    <span className="text-primary"> • </span>
-                    <span>
-                      {product.rank}
-                      <br />
-                    </span>
-
+      <span>Reviews</span>
+      <span className="text-primary"> • </span>
+      <span style={{ color: product.rank >= 50 ? 'green' : 'inherit' }}>
+        {product.reviews}
+      </span>
+      <span className="text-primary"> • </span>
+      {product.rank >= 50 && <span>{product.rank}Preporučujemo proizvod</span>}
+      <br />
+    </div>
                     <div>
                       <MDBBtn color="primary" size="sm" onClick={handleOpenModal}>Dodaj recenziju</MDBBtn>
                       <Recenzija show={showModal} onHide={handleCloseModal} nameProduct={product.nameProduct} idProduct={product.idProduct} />
                     </div>
-                    </div>
+                    
                 </MDBCol>
 
 

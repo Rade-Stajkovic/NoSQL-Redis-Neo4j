@@ -8,7 +8,7 @@ using NBP_backend.Models;
 using System.Collections;
 using NBP_backend.Services.Fajlovi;
 using System.Text.RegularExpressions;
-
+using NBP_backend.HelperClasses;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Xml.Linq;
@@ -48,14 +48,14 @@ namespace NBP_backend.Services
 
            
         }
-        public async Task<Product> GetProduct(int ID)
+        public async Task<ProductSerialization> GetProduct(int ID)
         {
             var results = await _client.Cypher
-                .Match("(n:Product)")
+                .Match("(k:Manufacturer) - [MANUFACTURED] - (n:Product)")
                 .Where("id(n)=$id")
                 .WithParam("id", ID)
-                .With("n{.*, ID:id(n)} AS u")
-                .Return(u => u.As<Product>())
+                .With("n{.*, ID:id(n), Manufacturer:k.Name} as u")
+                .Return(u => u.As<ProductSerialization>())
                 .ResultsAsync;
 
             return results.FirstOrDefault();
@@ -136,7 +136,8 @@ namespace NBP_backend.Services
             var res = await _client.Cypher.Match("(n:Product) - [v:STORED_IN]-(c:Market)")
                         .Where("id(n) = " + IdProduct)
                         .With("n{.*, Market:c.Name, Price:v.price, Sale:v.sale, Available:v.available} as n")
-                        .Return(n => n.As<Stored>()).ResultsAsync;
+                        .Return(n => n.As<Stored>())
+                        .ResultsAsync;
             var us = res.ToList();
             List<Stored> ret = new List<Stored>();
             foreach (var x in us)

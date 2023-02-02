@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-const[products, setProducts]= useState("");
+import PreporuceniProizvodi from './komponente/PreporuceniProizvodi/PreporuceniProizvodi';
+
+
 
 
 function Pocetna() {

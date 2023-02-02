@@ -78,7 +78,7 @@ namespace NBP_backend.Controllers
 
         [HttpPut]
         [Route("ChangeRelAttributes/{IDMarket}/{IDProduct}/{newPrice}/{newSale}/{newAvailable}")]
-        public IActionResult UnFollowProduct(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable)
+        public IActionResult UnFollowProduct(int IDMarket, int IDProduct, int newPrice, bool newSale, bool newAvailable, string message)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace NBP_backend.Controllers
                 bool res1 = res.Result;
                 if (res1)
                 {
-                    return Ok("Uspesno ste promnili vrednosti proizvod");
+                    return Ok("Uspesno ste promenili vrednosti proizvod");
                 }
                 return BadRequest("Nista");
             }

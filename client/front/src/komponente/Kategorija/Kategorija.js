@@ -45,7 +45,7 @@ function Kategorija() {
           {products.map((e, index) => {
             return (
               <MDBCol md="4" key={index}>
-                <MDBCard  className="position-relative" >
+                <MDBCard  className="position-relative mt-4" >
                   <MDBCardImage
                     src={"https://localhost:44332/PicturesProduct/" + e.picture}
                     fluid
